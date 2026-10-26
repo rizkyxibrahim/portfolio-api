@@ -14,13 +14,16 @@ return new class extends Migration
             $table->string('title');
             $table->text('description')->nullable();
             $table->boolean('is_completed')->default(false);
-            $table->date('due_date')->nullable();
+            $table->dateTime('scheduled_start_at')->nullable();
+            $table->dateTime('scheduled_end_at')->nullable();
+            $table->dateTime('due_at')->nullable();
             $table->string('priority')->default('medium'); // low, medium, high
             $table->timestamps();
 
             $table->index('user_id');
             $table->index('is_completed');
-            $table->index('due_date');
+            $table->index('scheduled_start_at');
+            $table->index('due_at');
         });
     }
 

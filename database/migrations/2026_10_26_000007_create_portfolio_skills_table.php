@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('name');
-            $table->string('category')->nullable(); // programming, design, language, etc.
+            $table->string('category')->nullable();
             $table->string('level')->default('beginner'); // beginner, intermediate, advanced, expert
             $table->integer('years_of_experience')->nullable();
             $table->timestamps();
