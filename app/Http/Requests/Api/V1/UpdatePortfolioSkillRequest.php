@@ -1,0 +1,23 @@
+<?php
+
+namespace App\Http\Requests\Api\V1;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class UpdatePortfolioSkillRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    public function rules(): array
+    {
+        return [
+            'name' => 'sometimes|string|max:100',
+            'category' => 'sometimes|nullable|string|max:50',
+            'level' => 'sometimes|in:beginner,intermediate,advanced,expert',
+            'years_of_experience' => 'sometimes|nullable|integer|min:0',
+        ];
+    }
+}

@@ -15,13 +15,17 @@ class Todo extends Model
         'title',
         'description',
         'is_completed',
-        'due_date',
+        'scheduled_start_at',
+        'scheduled_end_at',
+        'due_at',
         'priority',
     ];
 
     protected $casts = [
         'is_completed' => 'boolean',
-        'due_date' => 'date',
+        'scheduled_start_at' => 'datetime',
+        'scheduled_end_at' => 'datetime',
+        'due_at' => 'datetime',
     ];
 
     public function user(): BelongsTo

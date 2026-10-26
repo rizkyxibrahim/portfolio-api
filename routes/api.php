@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\ScheduleController;
+use App\Http\Requests\Api\V1\LoginRequest;
 use App\Http\Controllers\Api\V1\TodoController;
 use App\Http\Controllers\Api\V1\ReminderController;
 use App\Http\Controllers\Api\V1\FinanceTransactionController;
@@ -78,6 +79,14 @@ Route::middleware('auth:sanctum')->prefix('v1')->name('api.v1.')->group(function
     Route::get('/portfolio/projects/{project}', [PortfolioProjectController::class, 'show'])->name('portfolio.projects.show');
     Route::put('/portfolio/projects/{project}', [PortfolioProjectController::class, 'update'])->name('portfolio.projects.update');
     Route::delete('/portfolio/projects/{project}', [PortfolioProjectController::class, 'destroy'])->name('portfolio.projects.destroy');
+});
+
+// ============================================================================
+// Profile Photo (Protected — Sanctum auth required)
+// ============================================================================
+Route::middleware('auth:sanctum')->prefix('v1')->name('api.v1.')->group(function () {
+    Route::post('/profile/photo', [AuthController::class, 'uploadProfilePhoto'])->name('profile.photo.upload');
+    Route::delete('/profile/photo', [AuthController::class, 'deleteProfilePhoto'])->name('profile.photo.delete');
 });
 
 // ============================================================================

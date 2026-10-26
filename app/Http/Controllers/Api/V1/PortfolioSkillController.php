@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\V1\StorePortfolioSkillRequest;
+use App\Http\Requests\Api\V1\UpdatePortfolioSkillRequest;
+use App\Http\Resources\Api\V1\PortfolioSkillResource;
 use App\Models\PortfolioSkill;
 use App\Support\ApiResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class PortfolioSkillController extends Controller
 {
@@ -17,30 +19,23 @@ class PortfolioSkillController extends Controller
             ->orderBy('category', 'asc')
             ->orderBy('name', 'asc')
             ->get();
+
         return ApiResponse::success(
-            data: $skills,
+            data: PortfolioSkillResource::collection($skills),
             message: 'Portfolio skills retrieved.',
             code: 'PORTFOLIO_SKILLS_RETRIEVED',
         );
     }
 
-    public function store(Request $request)
+    public function store(StorePortfolioSkillRequest $request)
     {
         $user = $request->user();
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:100',
-            'category' => 'nullable|string|max:50',
-            'level' => 'sometimes|in:beginner,intermediate,advanced,expert',
-            'years_of_experience' => 'nullable|integer|min:0',
-        ]);
-        if ($validator->fails()) {
-            return ApiResponse::validationError($validator->errors()->toArray());
-        }
-        $skill = PortfolioSkill::create(array_merge($validator->validated(), [
+        $skill = PortfolioSkill::create(array_merge($request->validated(), [
             'user_id' => $user->id,
         ]));
+
         return ApiResponse::success(
-            data: $skill,
+            data: new PortfolioSkillResource($skill),
             message: 'Portfolio skill created.',
             code: 'PORTFOLIO_SKILL_CREATED',
             status: 201,
@@ -52,30 +47,24 @@ class PortfolioSkillController extends Controller
         if ($skill->user_id !== $request->user()->id) {
             return ApiResponse::forbidden();
         }
+
         return ApiResponse::success(
-            data: $skill,
+            data: new PortfolioSkillResource($skill),
             message: 'Portfolio skill retrieved.',
             code: 'PORTFOLIO_SKILL_RETRIEVED',
         );
     }
 
-    public function update(Request $request, PortfolioSkill $skill)
+    public function update(UpdatePortfolioSkillRequest $request, PortfolioSkill $skill)
     {
         if ($skill->user_id !== $request->user()->id) {
             return ApiResponse::forbidden();
         }
-        $validator = Validator::make($request->all(), [
-            'name' => 'sometimes|string|max:100',
-            'category' => 'nullable|string|max:50',
-            'level' => 'sometimes|in:beginner,intermediate,advanced,expert',
-            'years_of_experience' => 'nullable|integer|min:0',
-        ]);
-        if ($validator->fails()) {
-            return ApiResponse::validationError($validator->errors()->toArray());
-        }
-        $skill->update($validator->validated());
+
+        $skill->update($request->validated());
+
         return ApiResponse::success(
-            data: $skill,
+            data: new PortfolioSkillResource($skill),
             message: 'Portfolio skill updated.',
             code: 'PORTFOLIO_SKILL_UPDATED',
         );
@@ -86,7 +75,9 @@ class PortfolioSkillController extends Controller
         if ($skill->user_id !== $request->user()->id) {
             return ApiResponse::forbidden();
         }
+
         $skill->delete();
+
         return ApiResponse::success(
             message: 'Portfolio skill deleted.',
             code: 'PORTFOLIO_SKILL_DELETED',

@@ -12,10 +12,10 @@ This repository is part of the **Xibra Platform** ecosystem. Every application (
 
 | Komponen | Peran |
 |----------|-------|
-| Xibra API | Backend pusat — autentikasi, aturan bisnis, akses data (sumber kebenaran tunggal) |
-| Xibra Bot | Telegram bot operasional (jadwal, todo, reminder, keuangan, laporan) |
-| Hermes Bot | Pintu Telegram ke Hermes Agent Runtime (percakapan AI, perencanaan, coding, riset) |
-| Portfolio Web | Situs publik + dashboard pribadi di rizkyxibrahim.com |
+| **Xibra API** | Backend pusat — autentikasi, aturan bisnis, akses data (sumber kebenaran tunggal) |
+| **Xibra Bot** | Telegram bot operasional (jadwal, todo, reminder, keuangan, laporan) |
+| **Hermes Bot** | Pintu Telegram ke Hermes Agent Runtime (percakapan AI, perencanaan, coding, riset) |
+| **Portfolio Web** | Situs publik + dashboard pribadi di `rizkyxibrahim.com` |
 
 ## Tech Stack
 
@@ -23,12 +23,13 @@ This repository is part of the **Xibra Platform** ecosystem. Every application (
 - Laravel 13
 - PostgreSQL 18
 - Laravel Sanctum for API authentication
-- REST API with versioned endpoints (/api/v1/)
+- REST API with versioned endpoints (`/api/v1/`)
 - API Resources for consistent JSON representation
+- Laravel Factory for test data generation
 
 ## Response Format
 
-### Sukses — 200 OK
+### Sukses — `200 OK`
 
 ```json
 {
@@ -43,7 +44,7 @@ This repository is part of the **Xibra Platform** ecosystem. Every application (
 }
 ```
 
-### Validasi gagal — 422 Unprocessable Content
+### Validasi gagal — `422 Unprocessable Content`
 
 ```json
 {
@@ -53,12 +54,18 @@ This repository is part of the **Xibra Platform** ecosystem. Every application (
   "detail": "One or more fields contain invalid values.",
   "instance": "/api/v1/schedules",
   "code": "VALIDATION_ERROR",
-  "errors": [],
+  "errors": [
+    {
+      "field": "title",
+      "code": "REQUIRED",
+      "message": "The title field is required."
+    }
+  ],
   "request_id": "req_..."
 }
 ```
 
-### Tidak terautentikasi — 401 Unauthorized
+### Tidak terautentikasi — `401 Unauthorized`
 
 ```json
 {
@@ -72,7 +79,7 @@ This repository is part of the **Xibra Platform** ecosystem. Every application (
 }
 ```
 
-### Data tidak ditemukan — 404 Not Found
+### Data tidak ditemukan — `404 Not Found`
 
 ```json
 {
@@ -88,9 +95,9 @@ This repository is part of the **Xibra Platform** ecosystem. Every application (
 
 ## Database Schema
 
-Semua tabel personal memiliki user_id sebagai foreign key ke tabel users dengan onDelete('cascade').
+Semua tabel personal memiliki `user_id` sebagai foreign key ke tabel `users` dengan `onDelete('cascade')`.
 
-### Tabel users (diperluas)
+### Tabel `users` (diperluas)
 
 | Kolom | Tipe | Keterangan |
 |-------|------|------------|
@@ -99,11 +106,12 @@ Semua tabel personal memiliki user_id sebagai foreign key ke tabel users dengan 
 | username | string (unique) | Username untuk login |
 | phone | string (unique) | Nomor telepon untuk login |
 | email | string (unique) | Email untuk login |
+| profile_photo_path | string (nullable) | Path foto profil di Storage |
 | password | string | Hashed password |
 | email_verified_at | timestamp | Waktu verifikasi email |
 | created_at, updated_at | timestamp | Timestamps |
 
-### Tabel schedules
+### Tabel `schedules`
 
 | Kolom | Tipe | Keterangan |
 |-------|------|------------|
@@ -115,9 +123,13 @@ Semua tabel personal memiliki user_id sebagai foreign key ke tabel users dengan 
 | end_time | datetime | Waktu selesai |
 | location | string | Lokasi |
 | is_all_day | boolean | Apakah sehari penuh |
+| recurring | boolean | Apakah berulang |
+| recurring_pattern | string | daily, weekdays, weekly, monthly |
+| timezone | string | Default `Asia/Jakarta` |
+| is_overnight | boolean | Apakah melewati tengah malam |
 | created_at, updated_at | timestamp | Timestamps |
 
-### Tabel todos
+### Tabel `todos`
 
 | Kolom | Tipe | Keterangan |
 |-------|------|------------|
@@ -126,11 +138,13 @@ Semua tabel personal memiliki user_id sebagai foreign key ke tabel users dengan 
 | title | string | Judul tugas |
 | description | text | Deskripsi |
 | is_completed | boolean | Status selesai |
-| due_date | date | Tenggat waktu |
+| scheduled_start_at | datetime (nullable) | Waktu terjadwal mulai |
+| scheduled_end_at | datetime (nullable) | Waktu terjadwal selesai |
+| due_at | datetime (nullable) | Tenggat waktu |
 | priority | string | low, medium, high |
 | created_at, updated_at | timestamp | Timestamps |
 
-### Tabel reminders
+### Tabel `reminders`
 
 | Kolom | Tipe | Keterangan |
 |-------|------|------------|
@@ -141,9 +155,15 @@ Semua tabel personal memiliki user_id sebagai foreign key ke tabel users dengan 
 | reminder_at | datetime | Waktu pengingat |
 | is_sent | boolean | Apakah sudah terkirim |
 | is_completed | boolean | Apakah sudah selesai |
+| recurring | boolean | Apakah berulang |
+| recurring_pattern | string | daily, weekdays, weekly, before_event |
+| delivery_status | string | pending, sent, failed, delivered |
+| retry_count | integer | Jumlah percobaan ulang |
+| max_retries | integer | Maksimal percobaan ulang |
+| dedupe_key | string (unique) | Kunci pencegahan duplikasi |
 | created_at, updated_at | timestamp | Timestamps |
 
-### Tabel finance_transactions
+### Tabel `finance_transactions`
 
 | Kolom | Tipe | Keterangan |
 |-------|------|------------|
@@ -156,7 +176,7 @@ Semua tabel personal memiliki user_id sebagai foreign key ke tabel users dengan 
 | transaction_date | date | Tanggal transaksi |
 | created_at, updated_at | timestamp | Timestamps |
 
-### Tabel portfolio_skills
+### Tabel `portfolio_skills`
 
 | Kolom | Tipe | Keterangan |
 |-------|------|------------|
@@ -168,7 +188,7 @@ Semua tabel personal memiliki user_id sebagai foreign key ke tabel users dengan 
 | years_of_experience | integer | Tahun pengalaman |
 | created_at, updated_at | timestamp | Timestamps |
 
-### Tabel portfolio_projects
+### Tabel `portfolio_projects`
 
 | Kolom | Tipe | Keterangan |
 |-------|------|------------|
@@ -209,7 +229,7 @@ composer install
 
 ### 3. Configure environment variables
 
-Copy .env.example to .env and adjust the values:
+Copy `.env.example` to `.env` and adjust the values:
 
 ```bash
 copy .env.example .env
@@ -223,7 +243,7 @@ php artisan key:generate
 
 ### 5. Configure database
 
-Edit .env and set PostgreSQL connection:
+Edit `.env` and set PostgreSQL connection:
 
 ```env
 DB_CONNECTION=pgsql
@@ -234,7 +254,7 @@ DB_USERNAME=rizkyxibrahim
 DB_PASSWORD=your_password_here
 ```
 
-Buat database xibra_api di PostgreSQL sebelum menjalankan migration, pastikan user rizkyxibrahim memiliki akses ke database tersebut.
+Buat database `xibra_api` di PostgreSQL sebelum menjalankan migration, pastikan user `rizkyxibrahim` memiliki akses ke database tersebut.
 
 ### 6. Run migrations
 
@@ -242,37 +262,43 @@ Buat database xibra_api di PostgreSQL sebelum menjalankan migration, pastikan us
 php artisan migrate
 ```
 
-### 7. Start the development server
+### 7. Configure storage symlink (for profile photos)
+
+```bash
+php artisan storage:link
+```
+
+### 8. Start the development server
 
 ```bash
 php artisan serve
 ```
 
-Akses API di http://localhost:8000.
+Akses API di `http://localhost:8000`.
 
 ## Environment Variables
 
 | Variabel | Contoh Nilai | Keterangan |
 |----------|-------------|------------|
-| APP_NAME | Xibra API | Nama aplikasi |
-| APP_ENV | local | Lingkungan (local, production) |
-| APP_DEBUG | true | Mode debug |
-| APP_URL | http://localhost:8000 | URL aplikasi |
-| DB_CONNECTION | pgsql | Driver database |
-| DB_HOST | 127.0.0.1 | Host PostgreSQL |
-| DB_PORT | 5432 | Port PostgreSQL |
-| DB_DATABASE | xibra_api | Nama database |
-| DB_USERNAME | rizkyxibrahim | Username database |
-| DB_PASSWORD | * | Password database (jangan commit) |
-| SESSION_DRIVER | database | Driver session |
-| QUEUE_CONNECTION | database | Driver queue |
-| CACHE_STORE | database | Driver cache |
+| `APP_NAME` | `Xibra API` | Nama aplikasi |
+| `APP_ENV` | `local` | Lingkungan (local, production) |
+| `APP_DEBUG` | `true` | Mode debug |
+| `APP_URL` | `http://localhost:8000` | URL aplikasi |
+| `DB_CONNECTION` | `pgsql` | Driver database |
+| `DB_HOST` | `127.0.0.1` | Host PostgreSQL |
+| `DB_PORT` | `5432` | Port PostgreSQL |
+| `DB_DATABASE` | `xibra_api` | Nama database |
+| `DB_USERNAME` | `rizkyxibrahim` | Username database |
+| `DB_PASSWORD` | `*` | Password database (jangan commit) |
+| `SESSION_DRIVER` | `database` | Driver session |
+| `QUEUE_CONNECTION` | `database` | Driver queue |
+| `CACHE_STORE` | `database` | Driver cache |
 
 ⚠️ Jangan pernah commit token, API key, database credentials, atau file pribadi ke Git.
 
 ## Authentication (Laravel Sanctum)
 
-API menggunakan Laravel Sanctum untuk autentikasi token. Login menerima identity (username, phone, atau email) dan password.
+API menggunakan Laravel Sanctum untuk autentikasi token. Login menerima `identity` (username, phone, atau email) dan `password`.
 
 ### Login
 
@@ -304,7 +330,7 @@ Response:
 
 ### Mengakses endpoint terlindungi
 
-Sertakan header Authorization: Bearer <token> pada setiap request.
+Sertakan header `Authorization: Bearer <token>` pada setiap request.
 
 ```http
 GET /api/v1/auth/me
@@ -318,115 +344,130 @@ POST /api/v1/auth/logout
 Authorization: Bearer 1|...
 ```
 
+### Upload Foto Profil
+
+```http
+POST /api/v1/profile/photo
+Authorization: Bearer 1|...
+Content-Type: multipart/form-data
+
+photo: <file image>
+```
+
+### Hapus Foto Profil
+
+```http
+DELETE /api/v1/profile/photo
+Authorization: Bearer 1|...
+```
+
 ## API Endpoints
 
 ### Authentication (Public)
 
 | Endpoint | Method | Deskripsi | Auth |
 |----------|--------|-----------|------|
-| /api/v1/auth/login | POST | Login (username/phone/email + password) | Tidak |
-| /api/v1/auth/logout | POST | Logout (revoke token) | Ya |
-| /api/v1/auth/me | GET | Profil pengguna terautentikasi | Ya |
+| `/api/v1/auth/login` | POST | Login (username/phone/email + password) | Tidak |
+| `/api/v1/auth/logout` | POST | Logout (revoke token) | Ya |
+| `/api/v1/auth/me` | GET | Profil pengguna terautentikasi | Ya |
+
+### Profile Photo (Protected)
+
+| Endpoint | Method | Deskripsi | Auth |
+|----------|--------|-----------|------|
+| `/api/v1/profile/photo` | POST | Upload foto profil | Ya |
+| `/api/v1/profile/photo` | DELETE | Hapus foto profil | Ya |
 
 ### Schedules (Jadwal)
 
 | Endpoint | Method | Deskripsi | Auth |
 |----------|--------|-----------|------|
-| /api/v1/schedules | GET | Daftar jadwal pengguna | Ya |
-| /api/v1/schedules | POST | Buat jadwal baru | Ya |
-| /api/v1/schedules/{id} | GET | Detail jadwal | Ya |
-| /api/v1/schedules/{id} | PUT | Update jadwal | Ya |
-| /api/v1/schedules/{id} | DELETE | Hapus jadwal | Ya |
+| `/api/v1/schedules` | GET | Daftar jadwal pengguna | Ya |
+| `/api/v1/schedules` | POST | Buat jadwal baru | Ya |
+| `/api/v1/schedules/{id}` | GET | Detail jadwal | Ya |
+| `/api/v1/schedules/{id}` | PUT | Update jadwal | Ya |
+| `/api/v1/schedules/{id}` | DELETE | Hapus jadwal | Ya |
 
 ### Todos (Tugas)
 
 | Endpoint | Method | Deskripsi | Auth |
 |----------|--------|-----------|------|
-| /api/v1/todos | GET | Daftar tugas pengguna | Ya |
-| /api/v1/todos | POST | Buat tugas baru | Ya |
-| /api/v1/todos/{id} | GET | Detail tugas | Ya |
-| /api/v1/todos/{id} | PUT | Update tugas | Ya |
-| /api/v1/todos/{id} | DELETE | Hapus tugas | Ya |
+| `/api/v1/todos` | GET | Daftar tugas pengguna | Ya |
+| `/api/v1/todos` | POST | Buat tugas baru | Ya |
+| `/api/v1/todos/{id}` | GET | Detail tugas | Ya |
+| `/api/v1/todos/{id}` | PUT | Update tugas | Ya |
+| `/api/v1/todos/{id}` | DELETE | Hapus tugas | Ya |
 
 ### Reminders (Pengingat)
 
 | Endpoint | Method | Deskripsi | Auth |
 |----------|--------|-----------|------|
-| /api/v1/reminders | GET | Daftar pengingat pengguna | Ya |
-| /api/v1/reminders | POST | Buat pengingat baru | Ya |
-| /api/v1/reminders/{id} | GET | Detail pengingat | Ya |
-| /api/v1/reminders/{id} | PUT | Update pengingat | Ya |
-| /api/v1/reminders/{id} | DELETE | Hapus pengingat | Ya |
+| `/api/v1/reminders` | GET | Daftar pengingat pengguna | Ya |
+| `/api/v1/reminders` | POST | Buat pengingat baru | Ya |
+| `/api/v1/reminders/{id}` | GET | Detail pengingat | Ya |
+| `/api/v1/reminders/{id}` | PUT | Update pengingat | Ya |
+| `/api/v1/reminders/{id}` | DELETE | Hapus pengingat | Ya |
 
 ### Finance Transactions (Keuangan)
 
 | Endpoint | Method | Deskripsi | Auth |
 |----------|--------|-----------|------|
-| /api/v1/finance/transactions | GET | Daftar transaksi keuangan | Ya |
-| /api/v1/finance/transactions | POST | Buat transaksi baru | Ya |
-| /api/v1/finance/transactions/{id} | GET | Detail transaksi | Ya |
-| /api/v1/finance/transactions/{id} | PUT | Update transaksi | Ya |
-| /api/v1/finance/transactions/{id} | DELETE | Hapus transaksi | Ya |
+| `/api/v1/finance/transactions` | GET | Daftar transaksi keuangan | Ya |
+| `/api/v1/finance/transactions` | POST | Buat transaksi baru | Ya |
+| `/api/v1/finance/transactions/{id}` | GET | Detail transaksi | Ya |
+| `/api/v1/finance/transactions/{id}` | PUT | Update transaksi | Ya |
+| `/api/v1/finance/transactions/{id}` | DELETE | Hapus transaksi | Ya |
 
 ### Portfolio Skills (Keterampilan)
 
 | Endpoint | Method | Deskripsi | Auth |
 |----------|--------|-----------|------|
-| /api/v1/portfolio/skills | GET | Daftar keterampilan | Ya |
-| /api/v1/portfolio/skills | POST | Tambah keterampilan | Ya |
-| /api/v1/portfolio/skills/{id} | GET | Detail keterampilan | Ya |
-| /api/v1/portfolio/skills/{id} | PUT | Update keterampilan | Ya |
-| /api/v1/portfolio/skills/{id} | DELETE | Hapus keterampilan | Ya |
+| `/api/v1/portfolio/skills` | GET | Daftar keterampilan | Ya |
+| `/api/v1/portfolio/skills` | POST | Tambah keterampilan | Ya |
+| `/api/v1/portfolio/skills/{id}` | GET | Detail keterampilan | Ya |
+| `/api/v1/portfolio/skills/{id}` | PUT | Update keterampilan | Ya |
+| `/api/v1/portfolio/skills/{id}` | DELETE | Hapus keterampilan | Ya |
 
 ### Portfolio Projects (Proyek)
 
 | Endpoint | Method | Deskripsi | Auth |
 |----------|--------|-----------|------|
-| /api/v1/portfolio/projects | GET | Daftar proyek | Ya |
-| /api/v1/portfolio/projects | POST | Buat proyek baru | Ya |
-| /api/v1/portfolio/projects/{id} | GET | Detail proyek | Ya |
-| /api/v1/portfolio/projects/{id} | PUT | Update proyek | Ya |
-| /api/v1/portfolio/projects/{id} | DELETE | Hapus proyek | Ya |
+| `/api/v1/portfolio/projects` | GET | Daftar proyek | Ya |
+| `/api/v1/portfolio/projects` | POST | Buat proyek baru | Ya |
+| `/api/v1/portfolio/projects/{id}` | GET | Detail proyek | Ya |
+| `/api/v1/portfolio/projects/{id}` | PUT | Update proyek | Ya |
+| `/api/v1/portfolio/projects/{id}` | DELETE | Hapus proyek | Ya |
 
 ### Public Portfolio (Tanpa Login)
 
 | Endpoint | Method | Deskripsi | Auth |
 |----------|--------|-----------|------|
-| /api/v1/public/profile | GET | Profil publik | Tidak |
-| /api/v1/public/skills | GET | Keterampilan publik | Tidak |
-| /api/v1/public/projects | GET | Proyek publik | Tidak |
-| /api/v1/public/contact | GET | Endpoint kontak | Tidak |
+| `/api/v1/public/profile` | GET | Profil publik | Tidak |
+| `/api/v1/public/skills` | GET | Keterampilan publik | Tidak |
+| `/api/v1/public/projects` | GET | Proyek publik | Tidak |
+| `/api/v1/public/contact` | GET | Endpoint kontak | Tidak |
 
-## Testing & Troubleshooting
-
-### Menjalankan tes
+## Testing
 
 ```bash
 php artisan test
 ```
 
-### Masalah umum
-
-| Masalah | Penyebab | Solusi |
-|---------|----------|--------|
-| Koneksi database gagal | PostgreSQL belum mati atau kredensial salah | Pastikan PostgreSQL berjalan via Laragon dan .env sudah benar |
-| APP_KEY belum di-set | Key tidak di-generate | Jalankan php artisan key:generate |
-| Migration error | Tabel sudah ada atau database belum dibuat | Buat database xibra_api terlebih dahulu, atau reset dengan php artisan migrate:fresh |
-| 401 Unauthorized | Token tidak valid atau expired | Login ulang untuk mendapatkan token baru |
-| 403 Forbidden | Akses ke data milik user lain | Pastikan resource milik user yang login |
+Semua fitur telah diuji dengan PHPUnit menggunakan RefreshDatabase dan Model Factories.
 
 ## Git Workflow
 
-1. Baca README.md dan status proyek sebelum mengubah kode.
+1. Baca `README.md` dan status proyek sebelum mengubah kode.
 2. Kerjakan satu fitur kecil di VS Code.
 3. Uji fitur tersebut.
-4. Perbarui README.md jika perilaku atau setup berubah.
+4. Perbarui `README.md` jika perilaku atau setup berubah.
 5. Commit dan push dengan pesan yang jelas:
 
 ```
 [Initialize] Set up Laravel API project
 [Feature] Add schedules, todos, reminders, finance, portfolio models and migrations
 [Feature] Add Sanctum authentication and API controllers
+[Feature] Add scheduling, recurring, delivery status, and profile photo support
 [Fix] Fix database connection config
 ```
 
@@ -440,7 +481,7 @@ git push origin main
 
 ## Deployment & Recovery
 
-Belum diimplementasikan. Akan ditambahkan saat siap deploy ke server (xibra-infra).
+Belum diimplementasikan. Akan ditambahkan saat siap deploy ke server (`xibra-infra`).
 
 Panduan akan mencakup:
 - Deploy ke server 24/7 (VPS)
@@ -450,19 +491,19 @@ Panduan akan mencakup:
 
 ## Project Status & Next Steps
 
-**Status:** Initialized — Laravel 13 installed, Sanctum configured, PostgreSQL connected, all migrations applied, controllers and routes implemented.
+**Status:** Implemented — Laravel 13 installed, Sanctum configured, PostgreSQL connected, all migrations applied, controllers and routes implemented with Form Requests and API Resources.
 
 ### Next Steps
 
-1. Implementasi Form Request validation terpisah untuk setiap controller.
-2. Implementasi API Resources untuk representasi data yang lebih terstruktur.
+1. Implementasi Form Request validation terpisah untuk setiap controller (sudah dilakukan).
+2. Implementasi API Resources untuk representasi data yang lebih terstruktur (sudah dilakukan).
 3. Implementasi Policies untuk otorisasi tingkat baris.
-4. Hubungkan dengan xibra-bot (grammY + TypeScript) melalui endpoint API.
-5. Hubungkan dengan hermes-config untuk integrasi agent AI.
-6. Setup portfolio-web (Nuxt + TypeScript + Tailwind) untuk frontend.
+4. Hubungkan dengan `xibra-bot` (grammY + TypeScript) melalui endpoint API.
+5. Hubungkan dengan `hermes-config` untuk integrasi agent AI.
+6. Setup `portfolio-web` (Nuxt + TypeScript + Tailwind) untuk frontend.
 
 ---
 
-**Repository:** xibra-api
+**Repository:** `xibra-api`
 **Description:** Central REST API for Xibra Platform, powering personal productivity, scheduling, finance, and AI integrations.
 **License:** To be decided before public distribution.

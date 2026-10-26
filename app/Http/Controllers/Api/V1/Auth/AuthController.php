@@ -3,27 +3,21 @@
 namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\V1\LoginRequest;
+use App\Http\Requests\Api\V1\UploadProfilePhotoRequest;
+use App\Http\Resources\Api\V1\UserResource;
 use App\Models\User;
 use App\Support\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'identity' => 'required|string',
-            'password' => 'required|string',
-        ]);
-
-        if ($validator->fails()) {
-            return ApiResponse::validationError($validator->errors()->toArray());
-        }
-
-        $identity = $request->input('identity');
-        $password = $request->input('password');
+        $identity = $request->validated('identity');
+        $password = $request->validated('password');
 
         if (filter_var($identity, FILTER_VALIDATE_EMAIL)) {
             $field = 'email';
@@ -45,13 +39,7 @@ class AuthController extends Controller
 
         return ApiResponse::success(
             data: [
-                'user' => [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'username' => $user->username,
-                    'phone' => $user->phone,
-                    'email' => $user->email,
-                ],
+                'user' => new UserResource($user),
                 'token' => $token,
                 'token_type' => 'Bearer',
             ],
@@ -69,14 +57,7 @@ class AuthController extends Controller
         }
 
         return ApiResponse::success(
-            data: [
-                'id' => $user->id,
-                'name' => $user->name,
-                'username' => $user->username,
-                'phone' => $user->phone,
-                'email' => $user->email,
-                'email_verified_at' => $user->email_verified_at?->toISOString(),
-            ],
+            data: new UserResource($user),
             message: 'User profile retrieved.',
             code: 'PROFILE_RETRIEVED',
         );
@@ -89,6 +70,53 @@ class AuthController extends Controller
         return ApiResponse::success(
             message: 'Logout successful.',
             code: 'LOGOUT_SUCCESS',
+        );
+    }
+
+    public function uploadProfilePhoto(UploadProfilePhotoRequest $request)
+    {
+        $user = $request->user();
+
+        if (! $user) {
+            return ApiResponse::unauthenticated();
+        }
+
+        // Delete old photo if exists
+        if ($user->profile_photo_path) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($user->profile_photo_path);
+        }
+
+        $path = $request->file('photo')->store('profile_photos', 'public');
+
+        $user->update(['profile_photo_path' => $path]);
+
+        return ApiResponse::success(
+            data: [
+                'profile_photo_path' => $user->profile_photo_path,
+                'profile_photo_url' => $user->profile_photo_url,
+            ],
+            message: 'Profile photo uploaded.',
+            code: 'PROFILE_PHOTO_UPLOADED',
+            status: 201,
+        );
+    }
+
+    public function deleteProfilePhoto(Request $request)
+    {
+        $user = $request->user();
+
+        if (! $user) {
+            return ApiResponse::unauthenticated();
+        }
+
+        if ($user->profile_photo_path) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($user->profile_photo_path);
+            $user->update(['profile_photo_path' => null]);
+        }
+
+        return ApiResponse::success(
+            message: 'Profile photo deleted.',
+            code: 'PROFILE_PHOTO_DELETED',
         );
     }
 }

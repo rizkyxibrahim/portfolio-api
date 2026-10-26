@@ -18,12 +18,18 @@ class Schedule extends Model
         'end_time',
         'location',
         'is_all_day',
+        'recurring',
+        'recurring_pattern',
+        'timezone',
+        'is_overnight',
     ];
 
     protected $casts = [
         'start_time' => 'datetime',
         'end_time' => 'datetime',
         'is_all_day' => 'boolean',
+        'recurring' => 'boolean',
+        'is_overnight' => 'boolean',
     ];
 
     public function user(): BelongsTo
