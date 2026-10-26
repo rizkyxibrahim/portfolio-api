@@ -29,7 +29,7 @@ This repository is part of the **Xibra Platform** ecosystem. Every application (
 
 ## Response Format
 
-### Sukses — `200 OK`
+### Success — `200 OK`
 
 ```json
 {
@@ -44,7 +44,7 @@ This repository is part of the **Xibra Platform** ecosystem. Every application (
 }
 ```
 
-### Validasi gagal — `422 Unprocessable Content`
+### Validation Failed — `422 Unprocessable Content`
 
 ```json
 {
@@ -65,7 +65,7 @@ This repository is part of the **Xibra Platform** ecosystem. Every application (
 }
 ```
 
-### Tidak terautentikasi — `401 Unauthorized`
+### Unauthenticated — `401 Unauthorized`
 
 ```json
 {
@@ -79,7 +79,7 @@ This repository is part of the **Xibra Platform** ecosystem. Every application (
 }
 ```
 
-### Data tidak ditemukan — `404 Not Found`
+### Not Found — `404 Not Found`
 
 ```json
 {
@@ -95,113 +95,121 @@ This repository is part of the **Xibra Platform** ecosystem. Every application (
 
 ## Database Schema
 
-Semua tabel personal memiliki `user_id` sebagai foreign key ke tabel `users` dengan `onDelete('cascade')`.
+All personal tables have `user_id` as foreign key to `users` table with `onDelete('cascade')`.
 
-### Tabel `users` (diperluas)
+### Table `users` (extended)
 
-| Kolom | Tipe | Keterangan |
-|-------|------|------------|
+| Column | Type | Description |
+|--------|------|-------------|
 | id | bigInteger | Primary key |
-| name | string | Nama lengkap |
-| username | string (unique) | Username untuk login |
-| phone | string (unique) | Nomor telepon untuk login |
-| email | string (unique) | Email untuk login |
-| profile_photo_path | string (nullable) | Path foto profil di Storage |
+| name | string | Full name |
+| username | string (unique) | Username for login |
+| phone | string (unique) | Phone number for login |
+| email | string (unique) | Email for login |
+| profile_photo_path | string (nullable) | Profile photo path in Storage |
 | password | string | Hashed password |
-| email_verified_at | timestamp | Waktu verifikasi email |
+| email_verified_at | timestamp | Email verification timestamp |
 | created_at, updated_at | timestamp | Timestamps |
 
-### Tabel `schedules`
+### Table `password_reset_tokens`
 
-| Kolom | Tipe | Keterangan |
-|-------|------|------------|
+| Column | Type | Description |
+|--------|------|-------------|
+| email | string | Primary key (email) |
+| token | string | Reset token |
+| created_at | timestamp | Token creation time |
+
+### Table `schedules`
+
+| Column | Type | Description |
+|--------|------|-------------|
 | id | bigInteger | Primary key |
-| user_id | bigInteger | FK ke users |
-| title | string | Judul jadwal |
-| description | text | Deskripsi |
-| start_time | datetime | Waktu mulai |
-| end_time | datetime | Waktu selesai |
-| location | string | Lokasi |
-| is_all_day | boolean | Apakah sehari penuh |
-| recurring | boolean | Apakah berulang |
+| user_id | bigInteger | FK to users |
+| title | string | Schedule title |
+| description | text | Description |
+| start_time | datetime | Start time |
+| end_time | datetime | End time |
+| location | string | Location |
+| is_all_day | boolean | All-day event |
+| recurring | boolean | Is recurring |
 | recurring_pattern | string | daily, weekdays, weekly, monthly |
 | timezone | string | Default `Asia/Jakarta` |
-| is_overnight | boolean | Apakah melewati tengah malam |
+| is_overnight | boolean | Overnight event |
 | created_at, updated_at | timestamp | Timestamps |
 
-### Tabel `todos`
+### Table `todos`
 
-| Kolom | Tipe | Keterangan |
-|-------|------|------------|
+| Column | Type | Description |
+|--------|------|-------------|
 | id | bigInteger | Primary key |
-| user_id | bigInteger | FK ke users |
-| title | string | Judul tugas |
-| description | text | Deskripsi |
-| is_completed | boolean | Status selesai |
-| scheduled_start_at | datetime (nullable) | Waktu terjadwal mulai |
-| scheduled_end_at | datetime (nullable) | Waktu terjadwal selesai |
-| due_at | datetime (nullable) | Tenggat waktu |
+| user_id | bigInteger | FK to users |
+| title | string | Todo title |
+| description | text | Description |
+| is_completed | boolean | Completion status |
+| scheduled_start_at | datetime (nullable) | Scheduled start time |
+| scheduled_end_at | datetime (nullable) | Scheduled end time |
+| due_at | datetime (nullable) | Due date |
 | priority | string | low, medium, high |
 | created_at, updated_at | timestamp | Timestamps |
 
-### Tabel `reminders`
+### Table `reminders`
 
-| Kolom | Tipe | Keterangan |
-|-------|------|------------|
+| Column | Type | Description |
+|--------|------|-------------|
 | id | bigInteger | Primary key |
-| user_id | bigInteger | FK ke users |
-| title | string | Judul pengingat |
-| description | text | Deskripsi |
-| reminder_at | datetime | Waktu pengingat |
-| is_sent | boolean | Apakah sudah terkirim |
-| is_completed | boolean | Apakah sudah selesai |
-| recurring | boolean | Apakah berulang |
+| user_id | bigInteger | FK to users |
+| title | string | Reminder title |
+| description | text | Description |
+| reminder_at | datetime | Reminder time |
+| is_sent | boolean | Sent status |
+| is_completed | boolean | Completed status |
+| recurring | boolean | Is recurring |
 | recurring_pattern | string | daily, weekdays, weekly, before_event |
 | delivery_status | string | pending, sent, failed, delivered |
-| retry_count | integer | Jumlah percobaan ulang |
-| max_retries | integer | Maksimal percobaan ulang |
-| dedupe_key | string (unique) | Kunci pencegahan duplikasi |
+| retry_count | integer | Retry count |
+| max_retries | integer | Max retries |
+| dedupe_key | string (unique) | Deduplication key |
 | created_at, updated_at | timestamp | Timestamps |
 
-### Tabel `finance_transactions`
+### Table `finance_transactions`
 
-| Kolom | Tipe | Keterangan |
-|-------|------|------------|
+| Column | Type | Description |
+|--------|------|-------------|
 | id | bigInteger | Primary key |
-| user_id | bigInteger | FK ke users |
+| user_id | bigInteger | FK to users |
 | type | enum | income, expense |
-| amount | decimal(15,2) | Jumlah uang |
-| category | string | Kategori |
-| description | text | Deskripsi |
-| transaction_date | date | Tanggal transaksi |
+| amount | decimal(15,2) | Amount |
+| category | string | Category |
+| description | text | Description |
+| transaction_date | date | Transaction date |
 | created_at, updated_at | timestamp | Timestamps |
 
-### Tabel `portfolio_skills`
+### Table `portfolio_skills`
 
-| Kolom | Tipe | Keterangan |
-|-------|------|------------|
+| Column | Type | Description |
+|--------|------|-------------|
 | id | bigInteger | Primary key |
-| user_id | bigInteger | FK ke users |
-| name | string | Nama keterampilan |
-| category | string | Kategori (programming, design, dll.) |
+| user_id | bigInteger | FK to users |
+| name | string | Skill name |
+| category | string | Category (programming, design, etc.) |
 | level | string | beginner, intermediate, advanced, expert |
-| years_of_experience | integer | Tahun pengalaman |
+| years_of_experience | integer | Years of experience |
 | created_at, updated_at | timestamp | Timestamps |
 
-### Tabel `portfolio_projects`
+### Table `portfolio_projects`
 
-| Kolom | Tipe | Keterangan |
-|-------|------|------------|
+| Column | Type | Description |
+|--------|------|-------------|
 | id | bigInteger | Primary key |
-| user_id | bigInteger | FK ke users |
-| title | string | Judul proyek |
-| description | text | Deskripsi |
-| image_url | string | URL gambar |
-| github_url | string | URL repositori GitHub |
-| live_url | string | URL live/demo |
-| start_date | date | Tanggal mulai |
-| end_date | date | Tanggal selesai |
-| is_featured | boolean | Apakah unggulan |
+| user_id | bigInteger | FK to users |
+| title | string | Project title |
+| description | text | Description |
+| image_url | string | Image URL |
+| github_url | string | GitHub repository URL |
+| live_url | string | Live/demo URL |
+| start_date | date | Start date |
+| end_date | date | End date |
+| is_featured | boolean | Featured project |
 | created_at, updated_at | timestamp | Timestamps |
 
 ## Requirements
@@ -254,7 +262,7 @@ DB_USERNAME=rizkyxibrahim
 DB_PASSWORD=your_password_here
 ```
 
-Buat database `xibra_api` di PostgreSQL sebelum menjalankan migration, pastikan user `rizkyxibrahim` memiliki akses ke database tersebut.
+Create database `xibra_api` in PostgreSQL before running migration, ensure user `rizkyxibrahim` has access to the database.
 
 ### 6. Run migrations
 
@@ -274,31 +282,31 @@ php artisan storage:link
 php artisan serve
 ```
 
-Akses API di `http://localhost:8000`.
+Access API at `http://localhost:8000`.
 
 ## Environment Variables
 
-| Variabel | Contoh Nilai | Keterangan |
-|----------|-------------|------------|
-| `APP_NAME` | `Xibra API` | Nama aplikasi |
-| `APP_ENV` | `local` | Lingkungan (local, production) |
-| `APP_DEBUG` | `true` | Mode debug |
-| `APP_URL` | `http://localhost:8000` | URL aplikasi |
-| `DB_CONNECTION` | `pgsql` | Driver database |
-| `DB_HOST` | `127.0.0.1` | Host PostgreSQL |
-| `DB_PORT` | `5432` | Port PostgreSQL |
-| `DB_DATABASE` | `xibra_api` | Nama database |
-| `DB_USERNAME` | `rizkyxibrahim` | Username database |
-| `DB_PASSWORD` | `*` | Password database (jangan commit) |
-| `SESSION_DRIVER` | `database` | Driver session |
-| `QUEUE_CONNECTION` | `database` | Driver queue |
-| `CACHE_STORE` | `database` | Driver cache |
+| Variable | Example Value | Description |
+|----------|---------------|-------------|
+| `APP_NAME` | `Xibra API` | Application name |
+| `APP_ENV` | `local` | Environment (local, production) |
+| `APP_DEBUG` | `true` | Debug mode |
+| `APP_URL` | `http://localhost:8000` | Application URL |
+| `DB_CONNECTION` | `pgsql` | Database driver |
+| `DB_HOST` | `127.0.0.1` | PostgreSQL host |
+| `DB_PORT` | `5432` | PostgreSQL port |
+| `DB_DATABASE` | `xibra_api` | Database name |
+| `DB_USERNAME` | `rizkyxibrahim` | Database username |
+| `DB_PASSWORD` | `*` | Database password (do not commit) |
+| `SESSION_DRIVER` | `database` | Session driver |
+| `QUEUE_CONNECTION` | `database` | Queue driver |
+| `CACHE_STORE` | `database` | Cache driver |
 
-⚠️ Jangan pernah commit token, API key, database credentials, atau file pribadi ke Git.
+⚠️ Never commit tokens, API keys, database credentials, or personal files to Git.
 
 ## Authentication (Laravel Sanctum)
 
-API menggunakan Laravel Sanctum untuk autentikasi token. Login menerima `identity` (username, phone, atau email) dan `password`.
+API uses Laravel Sanctum for token authentication. Login accepts `identity` (username, phone, or email) and `password`.
 
 ### Login
 
@@ -328,124 +336,179 @@ Response:
 }
 ```
 
-### Mengakses endpoint terlindungi
+### Forgot Password
 
-Sertakan header `Authorization: Bearer <token>` pada setiap request.
+```http
+POST /api/v1/auth/forgot-password
+Content-Type: application/json
+
+{
+  "email": "user@example.com"
+}
+```
+
+Response:
+
+```json
+{
+  "status": "success",
+  "code": "PASSWORD_RESET_LINK_SENT",
+  "message": "Password reset link has been sent to your email.",
+  "data": null,
+  "meta": { "request_id": "...", "pagination": null }
+}
+```
+
+### Reset Password
+
+```http
+POST /api/v1/auth/reset-password
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "token": "<token_from_email>",
+  "password": "newpassword123",
+  "password_confirmation": "newpassword123"
+}
+```
+
+Response:
+
+```json
+{
+  "status": "success",
+  "code": "PASSWORD_RESET_SUCCESS",
+  "message": "Password has been changed successfully. Please log in with your new password.",
+  "data": null,
+  "meta": { "request_id": "...", "pagination": null }
+}
+```
+
+### Access Protected Endpoints
+
+Include `Authorization: Bearer <token>` header on every request.
 
 ```http
 GET /api/v1/auth/me
-Authorization: Bearer 1|...
+Authorization: Bearer ***
 ```
 
 ### Logout
 
 ```http
 POST /api/v1/auth/logout
-Authorization: Bearer 1|...
+Authorization: Bearer ***
 ```
 
-### Upload Foto Profil
+### Upload Profile Photo
 
 ```http
 POST /api/v1/profile/photo
-Authorization: Bearer 1|...
+Authorization: Bearer ***
 Content-Type: multipart/form-data
 
-photo: <file image>
+photo: <image file>
 ```
 
-### Hapus Foto Profil
+### Delete Profile Photo
 
 ```http
 DELETE /api/v1/profile/photo
-Authorization: Bearer 1|...
+Authorization: Bearer ***
 ```
 
 ## API Endpoints
 
 ### Authentication (Public)
 
-| Endpoint | Method | Deskripsi | Auth |
-|----------|--------|-----------|------|
-| `/api/v1/auth/login` | POST | Login (username/phone/email + password) | Tidak |
-| `/api/v1/auth/logout` | POST | Logout (revoke token) | Ya |
-| `/api/v1/auth/me` | GET | Profil pengguna terautentikasi | Ya |
+| Endpoint | Method | Description | Auth |
+|----------|--------|-------------|------|
+| `/api/v1/auth/login` | POST | Login (username/phone/email + password) | No |
+| `/api/v1/auth/forgot-password` | POST | Send password reset link | No |
+| `/api/v1/auth/reset-password` | POST | Reset password with token | No |
+| `/api/v1/auth/logout` | POST | Logout (revoke token) | Yes |
+| `/api/v1/auth/me` | GET | Authenticated user profile | Yes |
 
 ### Profile Photo (Protected)
 
-| Endpoint | Method | Deskripsi | Auth |
-|----------|--------|-----------|------|
-| `/api/v1/profile/photo` | POST | Upload foto profil | Ya |
-| `/api/v1/profile/photo` | DELETE | Hapus foto profil | Ya |
+| Endpoint | Method | Description | Auth |
+|----------|--------|-------------|------|
+| `/api/v1/profile/photo` | POST | Upload profile photo | Yes |
+| `/api/v1/profile/photo` | DELETE | Delete profile photo | Yes |
 
-### Schedules (Jadwal)
+### Schedules
 
-| Endpoint | Method | Deskripsi | Auth |
-|----------|--------|-----------|------|
-| `/api/v1/schedules` | GET | Daftar jadwal pengguna | Ya |
-| `/api/v1/schedules` | POST | Buat jadwal baru | Ya |
-| `/api/v1/schedules/{id}` | GET | Detail jadwal | Ya |
-| `/api/v1/schedules/{id}` | PUT | Update jadwal | Ya |
-| `/api/v1/schedules/{id}` | DELETE | Hapus jadwal | Ya |
+| Endpoint | Method | Description | Auth |
+|----------|--------|-------------|------|
+| `/api/v1/schedules` | GET | List user schedules | Yes |
+| `/api/v1/schedules` | POST | Create new schedule | Yes |
+| `/api/v1/schedules/{id}` | GET | Schedule detail | Yes |
+| `/api/v1/schedules/{id}` | PUT | Update schedule | Yes |
+| `/api/v1/schedules/{id}` | DELETE | Delete schedule | Yes |
 
-### Todos (Tugas)
+### Todos
 
-| Endpoint | Method | Deskripsi | Auth |
-|----------|--------|-----------|------|
-| `/api/v1/todos` | GET | Daftar tugas pengguna | Ya |
-| `/api/v1/todos` | POST | Buat tugas baru | Ya |
-| `/api/v1/todos/{id}` | GET | Detail tugas | Ya |
-| `/api/v1/todos/{id}` | PUT | Update tugas | Ya |
-| `/api/v1/todos/{id}` | DELETE | Hapus tugas | Ya |
+| Endpoint | Method | Description | Auth |
+|----------|--------|-------------|------|
+| `/api/v1/todos` | GET | List user todos | Yes |
+| `/api/v1/todos` | POST | Create new todo | Yes |
+| `/api/v1/todos/{id}` | GET | Todo detail | Yes |
+| `/api/v1/todos/{id}` | PUT | Update todo | Yes |
+| `/api/v1/todos/{id}` | DELETE | Delete todo | Yes |
 
-### Reminders (Pengingat)
+### Reminders
 
-| Endpoint | Method | Deskripsi | Auth |
-|----------|--------|-----------|------|
-| `/api/v1/reminders` | GET | Daftar pengingat pengguna | Ya |
-| `/api/v1/reminders` | POST | Buat pengingat baru | Ya |
-| `/api/v1/reminders/{id}` | GET | Detail pengingat | Ya |
-| `/api/v1/reminders/{id}` | PUT | Update pengingat | Ya |
-| `/api/v1/reminders/{id}` | DELETE | Hapus pengingat | Ya |
+| Endpoint | Method | Description | Auth |
+|----------|--------|-------------|------|
+| `/api/v1/reminders` | GET | List user reminders | Yes |
+| `/api/v1/reminders` | POST | Create new reminder | Yes |
+| `/api/v1/reminders/{id}` | GET | Reminder detail | Yes |
+| `/api/v1/reminders/{id}` | PUT | Update reminder | Yes |
+| `/api/v1/reminders/{id}` | DELETE | Delete reminder | Yes |
 
-### Finance Transactions (Keuangan)
+### Finance Transactions
 
-| Endpoint | Method | Deskripsi | Auth |
-|----------|--------|-----------|------|
-| `/api/v1/finance/transactions` | GET | Daftar transaksi keuangan | Ya |
-| `/api/v1/finance/transactions` | POST | Buat transaksi baru | Ya |
-| `/api/v1/finance/transactions/{id}` | GET | Detail transaksi | Ya |
-| `/api/v1/finance/transactions/{id}` | PUT | Update transaksi | Ya |
-| `/api/v1/finance/transactions/{id}` | DELETE | Hapus transaksi | Ya |
+| Endpoint | Method | Description | Auth |
+|----------|--------|-------------|------|
+| `/api/v1/finance/transactions` | GET | List financial transactions | Yes |
+| `/api/v1/finance/transactions` | POST | Create new transaction | Yes |
+| `/api/v1/finance/transactions/{id}` | GET | Transaction detail | Yes |
+| `/api/v1/finance/transactions/{id}` | PUT | Update transaction | Yes |
+| `/api/v1/finance/transactions/{id}` | DELETE | Delete transaction | Yes |
 
-### Portfolio Skills (Keterampilan)
+**Note:** The `type` field accepts: `in`, `out`, `income`, `expense`. API normalizes `in` → `income` and `out` → `expense`.
 
-| Endpoint | Method | Deskripsi | Auth |
-|----------|--------|-----------|------|
-| `/api/v1/portfolio/skills` | GET | Daftar keterampilan | Ya |
-| `/api/v1/portfolio/skills` | POST | Tambah keterampilan | Ya |
-| `/api/v1/portfolio/skills/{id}` | GET | Detail keterampilan | Ya |
-| `/api/v1/portfolio/skills/{id}` | PUT | Update keterampilan | Ya |
-| `/api/v1/portfolio/skills/{id}` | DELETE | Hapus keterampilan | Ya |
+Filter: `?type=income|expense|all`
 
-### Portfolio Projects (Proyek)
+### Portfolio Skills
 
-| Endpoint | Method | Deskripsi | Auth |
-|----------|--------|-----------|------|
-| `/api/v1/portfolio/projects` | GET | Daftar proyek | Ya |
-| `/api/v1/portfolio/projects` | POST | Buat proyek baru | Ya |
-| `/api/v1/portfolio/projects/{id}` | GET | Detail proyek | Ya |
-| `/api/v1/portfolio/projects/{id}` | PUT | Update proyek | Ya |
-| `/api/v1/portfolio/projects/{id}` | DELETE | Hapus proyek | Ya |
+| Endpoint | Method | Description | Auth |
+|----------|--------|-------------|------|
+| `/api/v1/portfolio/skills` | GET | List skills | Yes |
+| `/api/v1/portfolio/skills` | POST | Add skill | Yes |
+| `/api/v1/portfolio/skills/{id}` | GET | Skill detail | Yes |
+| `/api/v1/portfolio/skills/{id}` | PUT | Update skill | Yes |
+| `/api/v1/portfolio/skills/{id}` | DELETE | Delete skill | Yes |
 
-### Public Portfolio (Tanpa Login)
+### Portfolio Projects
 
-| Endpoint | Method | Deskripsi | Auth |
-|----------|--------|-----------|------|
-| `/api/v1/public/profile` | GET | Profil publik | Tidak |
-| `/api/v1/public/skills` | GET | Keterampilan publik | Tidak |
-| `/api/v1/public/projects` | GET | Proyek publik | Tidak |
-| `/api/v1/public/contact` | GET | Endpoint kontak | Tidak |
+| Endpoint | Method | Description | Auth |
+|----------|--------|-------------|------|
+| `/api/v1/portfolio/projects` | GET | List projects | Yes |
+| `/api/v1/portfolio/projects` | POST | Create project | Yes |
+| `/api/v1/portfolio/projects/{id}` | GET | Project detail | Yes |
+| `/api/v1/portfolio/projects/{id}` | PUT | Update project | Yes |
+| `/api/v1/portfolio/projects/{id}` | DELETE | Delete project | Yes |
+
+### Public Portfolio (No Login)
+
+| Endpoint | Method | Description | Auth |
+|----------|--------|-------------|------|
+| `/api/v1/public/profile` | GET | Public profile | No |
+| `/api/v1/public/skills` | GET | Public skills | No |
+| `/api/v1/public/projects` | GET | Public projects | No |
+| `/api/v1/public/contact` | GET | Contact endpoint | No |
 
 ## Testing
 
@@ -453,15 +516,19 @@ Authorization: Bearer 1|...
 php artisan test
 ```
 
-Semua fitur telah diuji dengan PHPUnit menggunakan RefreshDatabase dan Model Factories.
+All features tested with PHPUnit using RefreshDatabase and Model Factories.
+
+## Postman Collection
+
+Import the collection from `docs/xibra-api-postman-collection.json` for complete API testing with examples.
 
 ## Git Workflow
 
-1. Baca `README.md` dan status proyek sebelum mengubah kode.
-2. Kerjakan satu fitur kecil di VS Code.
-3. Uji fitur tersebut.
-4. Perbarui `README.md` jika perilaku atau setup berubah.
-5. Commit dan push dengan pesan yang jelas:
+1. Read `README.md` and project status before changing code.
+2. Work on one small feature in VS Code.
+3. Test the feature.
+4. Update `README.md` if behavior or setup changes.
+5. Commit and push with clear message:
 
 ```
 [Initialize] Set up Laravel API project
@@ -469,25 +536,28 @@ Semua fitur telah diuji dengan PHPUnit menggunakan RefreshDatabase dan Model Fac
 [Feature] Add Sanctum authentication and API controllers
 [Feature] Add scheduling, recurring, delivery status, and profile photo support
 [Fix] Fix database connection config
+[Feature] Add forgot/reset password functionality
+[Fix] Normalize finance transaction types (in/out → income/expense)
+[Fix] Fix schedule recurring validation (nullable boolean, default false)
 ```
 
-### Contoh commit
+### Example commit
 
 ```bash
 git add .
-git commit -m "[Feature] Add Sanctum authentication and API controllers"
+git commit -m "[Feature] Add forgot/reset password functionality"
 git push origin main
 ```
 
 ## Deployment & Recovery
 
-Belum diimplementasikan. Akan ditambahkan saat siap deploy ke server (`xibra-infra`).
+Not yet implemented. Will be added when ready to deploy to server (`xibra-infra`).
 
-Panduan akan mencakup:
-- Deploy ke server 24/7 (VPS)
-- Konfigurasi reverse proxy (Nginx)
-- Backup database PostgreSQL
-- Pemulihan dari backup
+Guide will include:
+- Deploy to 24/7 server (VPS)
+- Reverse proxy configuration (Nginx)
+- PostgreSQL database backup
+- Recovery from backup
 
 ## Project Status & Next Steps
 
@@ -495,15 +565,16 @@ Panduan akan mencakup:
 
 ### Next Steps
 
-1. Implementasi Form Request validation terpisah untuk setiap controller (sudah dilakukan).
-2. Implementasi API Resources untuk representasi data yang lebih terstruktur (sudah dilakukan).
-3. Implementasi Policies untuk otorisasi tingkat baris.
-4. Hubungkan dengan `xibra-bot` (grammY + TypeScript) melalui endpoint API.
-5. Hubungkan dengan `hermes-config` untuk integrasi agent AI.
-6. Setup `portfolio-web` (Nuxt + TypeScript + Tailwind) untuk frontend.
+1. Implement Form Request validation for each controller (done).
+2. Implement API Resources for structured data representation (done).
+3. Implement Policies for row-level authorization.
+4. Connect with `xibra-bot` (grammY + TypeScript) via API endpoints.
+5. Connect with `hermes-config` for AI agent integration.
+6. Setup `portfolio-web` (Nuxt + TypeScript + Tailwind) for frontend.
+7. Deploy to Supabase (PostgreSQL) and Cloudflare Workers.
 
 ---
 
-**Repository:** `xibra-api`
-**Description:** Central REST API for Xibra Platform, powering personal productivity, scheduling, finance, and AI integrations.
+**Repository:** `xibra-api`  
+**Description:** Central REST API for Xibra Platform, powering personal productivity, scheduling, finance, and AI integrations.  
 **License:** To be decided before public distribution.

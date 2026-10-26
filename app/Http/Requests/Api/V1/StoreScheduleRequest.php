@@ -20,10 +20,31 @@ class StoreScheduleRequest extends FormRequest
             'end_time' => 'nullable|date|after:start_time',
             'location' => 'nullable|string|max:255',
             'is_all_day' => 'sometimes|boolean',
-            'recurring' => 'sometimes|boolean',
+            'recurring' => 'sometimes|nullable|boolean',
             'recurring_pattern' => 'sometimes|nullable|in:daily,weekdays,weekly,monthly',
             'timezone' => 'sometimes|string|in:Asia/Jakarta,UTC,Asia/Bangkok,Asia/Kolkata',
             'is_overnight' => 'sometimes|boolean',
         ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'title.required' => 'Schedule title is required.',
+                        'start_time.required' => 'Start time is required.',
+                        'end_time.after' => 'End time must be after start time.',
+                        'recurring.boolean' => 'Recurring must be true or false.',
+                        'timezone.in' => 'Invalid timezone.',
+        ];
+    }
+
+    /**
+         * Set default recurring to false if null.
+         */
+    protected function prepareForValidation(): void
+    {
+        if ($this->input('recurring') === null) {
+            $this->merge(['recurring' => false]);
+        }
     }
 }
