@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\LoginRequest;
+use App\Http\Requests\Api\V1\RegisterRequest;
 use App\Http\Requests\Api\V1\UploadProfilePhotoRequest;
 use App\Http\Resources\Api\V1\UserResource;
 use App\Models\User;
@@ -15,40 +16,64 @@ use Illuminate\Support\Str;
 class AuthController extends Controller
 {
     public function login(LoginRequest $request)
-    {
-        $identity = $request->validated('identity');
-        $password = $request->validated('password');
+        {
+            $identity = $request->validated('identity');
+            $password = $request->validated('password');
 
-        if (filter_var($identity, FILTER_VALIDATE_EMAIL)) {
-            $field = 'email';
-        } elseif (preg_match('/^\+?[\d\s\-]+$/', $identity)) {
-            $field = 'phone';
-        } else {
-            $field = 'username';
+            if (filter_var($identity, FILTER_VALIDATE_EMAIL)) {
+                $field = 'email';
+            } elseif (preg_match('/^\+?[\d\s\-]+$/', $identity)) {
+                $field = 'phone';
+            } else {
+                $field = 'username';
+            }
+
+            $user = User::where($field, $identity)->first();
+
+            if (! $user || ! Hash::check($password, $user->password)) {
+                return ApiResponse::unauthenticated();
+            }
+
+            $user->tokens()->delete();
+
+            $token = $user->createToken('xibra-api-token')->plainTextToken;
+
+            return ApiResponse::success(
+                data: [
+                    'user' => new UserResource($user),
+                    'token' => $token,
+                    'token_type' => 'Bearer',
+                ],
+                message: 'Login successful.',
+                code: 'LOGIN_SUCCESS',
+            );
         }
 
-        $user = User::where($field, $identity)->first();
+        public function register(RegisterRequest $request)
+        {
+            $user = User::create([
+                'name' => $request->validated('name'),
+                'username' => $request->validated('username'),
+                'email' => $request->validated('email'),
+                'phone' => $request->validated('phone'),
+                'password' => Hash::make($request->validated('password')),
+            ]);
 
-        if (! $user || ! Hash::check($password, $user->password)) {
-            return ApiResponse::unauthenticated();
+            $token = $user->createToken('xibra-api-token')->plainTextToken;
+
+            return ApiResponse::success(
+                data: [
+                    'user' => new UserResource($user),
+                    'token' => $token,
+                    'token_type' => 'Bearer',
+                ],
+                message: 'Registration successful.',
+                code: 'REGISTER_SUCCESS',
+                status: 201,
+            );
         }
 
-        $user->tokens()->delete();
-
-        $token = $user->createToken('xibra-api-token')->plainTextToken;
-
-        return ApiResponse::success(
-            data: [
-                'user' => new UserResource($user),
-                'token' => $token,
-                'token_type' => 'Bearer',
-            ],
-            message: 'Login successful.',
-            code: 'LOGIN_SUCCESS',
-        );
-    }
-
-    public function me(Request $request)
+        public function me(Request $request)
     {
         $user = $request->user();
 
