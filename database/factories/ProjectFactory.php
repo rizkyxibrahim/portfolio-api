@@ -2,12 +2,12 @@
 
 namespace Database\Factories;
 
-use App\Models\PortfolioProject;
+use App\Models\Project;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class PortfolioProjectFactory extends Factory
+class ProjectFactory extends Factory
 {
-    protected $model = PortfolioProject::class;
+    protected $model = Project::class;
 
     public function definition(): array
     {

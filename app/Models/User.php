@@ -78,18 +78,18 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the portfolio skills owned by the user.
+     * Get the skills owned by the user.
      */
-    public function portfolioSkills()
+    public function skills()
     {
-        return $this->hasMany(PortfolioSkill::class);
+        return $this->hasMany(Skill::class);
     }
 
     /**
-     * Get the portfolio projects owned by the user.
+     * Get the projects owned by the user.
      */
-    public function portfolioProjects()
+    public function projects()
     {
-        return $this->hasMany(PortfolioProject::class);
+        return $this->hasMany(Project::class);
     }
 }

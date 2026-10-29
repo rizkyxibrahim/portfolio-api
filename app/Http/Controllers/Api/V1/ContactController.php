@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ContactResource;
@@ -21,7 +21,7 @@ class ContactController extends Controller
         $contact = Contact::create($validated);
 
         return response()->json([
-            'message' => 'Pesan Anda telah terkirim. Kami akan menanggapi segera.',
+            'message' => 'Your message has been sent. We will respond shortly.',
             'data' => new ContactResource($contact),
         ], 201);
     }
@@ -33,31 +33,31 @@ class ContactController extends Controller
         return ContactResource::collection($contacts);
     }
 
-    public function showAdmin($id)
+    public function showAdmin(int $id)
     {
         $contact = Contact::findOrFail($id);
 
         return new ContactResource($contact);
     }
 
-    public function markAsRead(Request $request, $id)
+    public function markAsRead(Request $request, int $id)
     {
         $contact = Contact::findOrFail($id);
         $contact->update(['is_read' => true]);
 
         return response()->json([
-            'message' => 'Pesan ditandai telah dibaca.',
+            'message' => 'Message marked as read.',
             'data' => new ContactResource($contact->fresh()),
         ]);
     }
 
-    public function destroy($id)
+    public function destroy(int $id)
     {
         $contact = Contact::findOrFail($id);
         $contact->delete();
 
         return response()->json([
-            'message' => 'Pesan berhasil dihapus.',
+            'message' => 'Message deleted successfully.',
         ]);
     }
 }

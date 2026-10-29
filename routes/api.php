@@ -8,9 +8,9 @@ use App\Http\Controllers\Api\V1\ScheduleController;
 use App\Http\Controllers\Api\V1\TodoController;
 use App\Http\Controllers\Api\V1\ReminderController;
 use App\Http\Controllers\Api\V1\FinanceTransactionController;
-use App\Http\Controllers\Api\V1\PortfolioSkillController;
-use App\Http\Controllers\Api\V1\PortfolioProjectController;
-use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\Api\V1\ProfileController;
+use App\Http\Controllers\Api\V1\SkillController;
+use App\Http\Controllers\Api\V1\ProjectController;
 
 /*
 |--------------------------------------------------------------------------
@@ -78,19 +78,19 @@ Route::middleware('auth:sanctum')->prefix('v1')->name('api.v1.')->group(function
     Route::put('/finance/transactions/{transaction}', [FinanceTransactionController::class, 'update'])->name('finance.transactions.update');
     Route::delete('/finance/transactions/{transaction}', [FinanceTransactionController::class, 'destroy'])->name('finance.transactions.destroy');
 
-    // Portfolio Skills
-    Route::get('/portfolio/skills', [PortfolioSkillController::class, 'index'])->name('portfolio.skills.index');
-    Route::post('/portfolio/skills', [PortfolioSkillController::class, 'store'])->name('portfolio.skills.store');
-    Route::get('/portfolio/skills/{skill}', [PortfolioSkillController::class, 'show'])->name('portfolio.skills.show');
-    Route::put('/portfolio/skills/{skill}', [PortfolioSkillController::class, 'update'])->name('portfolio.skills.update');
-    Route::delete('/portfolio/skills/{skill}', [PortfolioSkillController::class, 'destroy'])->name('portfolio.skills.destroy');
+    // Skills
+    Route::get('/portfolio/skills', [SkillController::class, 'index'])->name('portfolio.skills.index');
+    Route::post('/portfolio/skills', [SkillController::class, 'store'])->name('portfolio.skills.store');
+    Route::get('/portfolio/skills/{skill}', [SkillController::class, 'show'])->name('portfolio.skills.show');
+    Route::put('/portfolio/skills/{skill}', [SkillController::class, 'update'])->name('portfolio.skills.update');
+    Route::delete('/portfolio/skills/{skill}', [SkillController::class, 'destroy'])->name('portfolio.skills.destroy');
 
     // Portfolio Projects
-    Route::get('/portfolio/projects', [PortfolioProjectController::class, 'index'])->name('portfolio.projects.index');
-    Route::post('/portfolio/projects', [PortfolioProjectController::class, 'store'])->name('portfolio.projects.store');
-    Route::get('/portfolio/projects/{project}', [PortfolioProjectController::class, 'show'])->name('portfolio.projects.show');
-    Route::put('/portfolio/projects/{project}', [PortfolioProjectController::class, 'update'])->name('portfolio.projects.update');
-    Route::delete('/portfolio/projects/{project}', [PortfolioProjectController::class, 'destroy'])->name('portfolio.projects.destroy');
+    Route::get('/portfolio/projects', [ProjectController::class, 'index'])->name('portfolio.projects.index');
+    Route::post('/portfolio/projects', [ProjectController::class, 'store'])->name('portfolio.projects.store');
+    Route::get('/portfolio/projects/{project}', [ProjectController::class, 'show'])->name('portfolio.projects.show');
+    Route::put('/portfolio/projects/{project}', [ProjectController::class, 'update'])->name('portfolio.projects.update');
+    Route::delete('/portfolio/projects/{project}', [ProjectController::class, 'destroy'])->name('portfolio.projects.destroy');
 
     // Profile
     Route::get('/profile/me', [ProfileController::class, 'show'])->name('profile.me');
@@ -105,22 +105,12 @@ Route::middleware('auth:sanctum')->prefix('v1')->name('api.v1.')->group(function
     Route::delete('/profile/photo', [AuthController::class, 'deleteProfilePhoto'])->name('profile.photo.delete');
 });
 
-
 // ============================================================================
 // Public Portfolio (Read-only — no login required)
 // ============================================================================
 Route::prefix('v1/public')->name('api.v1.public.')->group(function () {
     Route::get('/profile', [ProfileController::class, 'showPublic'])->name('profile');
-    Route::get('/contact', [ProfileController::class, 'publicContact'])->name('contact');
-});
-
-
-// ============================================================================
-// Public Portfolio (Read-only — no login required)
-// ============================================================================
-Route::prefix('v1/public')->name('api.v1.public.')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'showPublic'])->name('profile');
-    Route::get('/skills', [PortfolioSkillController::class, 'publicIndex'])->name('skills');
-    Route::get('/projects', [PortfolioProjectController::class, 'publicIndex'])->name('projects');
+    Route::get('/skills', [SkillController::class, 'publicIndex'])->name('skills');
+    Route::get('/projects', [ProjectController::class, 'publicIndex'])->name('projects');
     Route::get('/contact', [ProfileController::class, 'publicContact'])->name('contact');
 });

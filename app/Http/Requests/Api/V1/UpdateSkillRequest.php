@@ -4,7 +4,7 @@ namespace App\Http\Requests\Api\V1;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdatePortfolioSkillRequest extends FormRequest
+class UpdateSkillRequest extends FormRequest
 {
     public function authorize(): bool
     {

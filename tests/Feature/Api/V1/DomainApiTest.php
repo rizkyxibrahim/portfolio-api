@@ -3,8 +3,8 @@
 namespace Tests\Feature\Api\V1;
 
 use App\Models\FinanceTransaction;
-use App\Models\PortfolioProject;
-use App\Models\PortfolioSkill;
+use App\Models\Project;
+use App\Models\Skill;
 use App\Models\Reminder;
 use App\Models\Schedule;
 use App\Models\Todo;
@@ -319,24 +319,24 @@ class DomainApiTest extends TestCase
             ]);
 
         $response->assertStatus(201)
-            ->assertJson(['code' => 'PORTFOLIO_SKILL_CREATED']);
+            ->assertJson(['code' => 'SKILL_CREATED']);
 
-        $this->assertDatabaseHas('portfolio_skills', [
+        $this->assertDatabaseHas('skills', [
             'name' => 'PHP',
             'category' => 'programming',
             'level' => 'advanced',
         ]);
     }
 
-    public function test_get_portfolio_skills(): void
+    public function test_get_skills(): void
     {
-        PortfolioSkill::factory()->count(3)->create(['user_id' => $this->user->id]);
+        Skill::factory()->count(3)->create(['user_id' => $this->user->id]);
 
         $response = $this->withHeaders($this->getAuthHeaders())
             ->getJson('/api/v1/portfolio/skills');
 
         $response->assertStatus(200)
-            ->assertJson(['code' => 'PORTFOLIO_SKILLS_RETRIEVED']);
+            ->assertJson(['code' => 'SKILLS_RETRIEVED']);
     }
 
     // ============ Portfolio Projects ============
@@ -352,23 +352,23 @@ class DomainApiTest extends TestCase
             ]);
 
         $response->assertStatus(201)
-            ->assertJson(['code' => 'PORTFOLIO_PROJECT_CREATED']);
+            ->assertJson(['code' => 'PROJECT_CREATED']);
 
-        $this->assertDatabaseHas('portfolio_projects', [
+        $this->assertDatabaseHas('projects', [
             'title' => 'Xibra API',
             'is_featured' => true,
         ]);
     }
 
-    public function test_get_portfolio_projects(): void
+    public function test_get_projects(): void
     {
-        PortfolioProject::factory()->count(3)->create(['user_id' => $this->user->id]);
+        Project::factory()->count(3)->create(['user_id' => $this->user->id]);
 
         $response = $this->withHeaders($this->getAuthHeaders())
             ->getJson('/api/v1/portfolio/projects');
 
         $response->assertStatus(200)
-            ->assertJson(['code' => 'PORTFOLIO_PROJECTS_RETRIEVED']);
+            ->assertJson(['code' => 'PROJECTS_RETRIEVED']);
     }
 
     // ============ Public Endpoints ============
@@ -602,3 +602,5 @@ class DomainApiTest extends TestCase
             }
         }
     }
+
+

@@ -4,9 +4,9 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\User;
-use App\Models\PortfolioSkill;
+use App\Models\Skill;
 
-class PortfolioSkillSeeder extends Seeder
+class SkillSeeder extends Seeder
 {
     public function run(): void
     {
@@ -56,9 +56,10 @@ class PortfolioSkillSeeder extends Seeder
         ];
 
         foreach ($skills as $skill) {
-            PortfolioSkill::create(array_merge($skill, [
+            Skill::create(array_merge($skill, [
                 'user_id' => $user->id,
             ]));
         }
     }
 }
+

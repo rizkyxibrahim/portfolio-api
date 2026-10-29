@@ -10,13 +10,15 @@ return new class extends Migration
     {
         Schema::create('skills', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('profile_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('name');
             $table->string('category')->nullable();
-            $table->integer('level')->default(50);
-            $table->boolean('is_featured')->default(false);
-            $table->integer('display_order')->default(0);
+            $table->string('level')->default('beginner'); // beginner, intermediate, advanced, expert
+            $table->integer('years_of_experience')->nullable();
             $table->timestamps();
+
+            $table->index('user_id');
+            $table->index('category');
         });
     }
 

@@ -2,12 +2,12 @@
 
 namespace Database\Factories;
 
-use App\Models\PortfolioSkill;
+use App\Models\Skill;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class PortfolioSkillFactory extends Factory
+class SkillFactory extends Factory
 {
-    protected $model = PortfolioSkill::class;
+    protected $model = Skill::class;
 
     public function definition(): array
     {

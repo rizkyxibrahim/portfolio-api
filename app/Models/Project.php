@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Project extends Model
@@ -11,34 +11,25 @@ class Project extends Model
     use HasFactory;
 
     protected $fillable = [
-        'profile_id',
+        'user_id',
         'title',
-        'slug',
-        'excerpt',
-        'content',
-        'image',
-        'demo_url',
+        'description',
+        'image_url',
         'github_url',
-        'status',
+        'live_url',
+        'start_date',
+        'end_date',
         'is_featured',
-        'published_at',
-        'display_order',
     ];
 
     protected $casts = [
+        'start_date' => 'date',
+        'end_date' => 'date',
         'is_featured' => 'boolean',
-        'published_at' => 'datetime',
     ];
 
-    public function profile(): BelongsTo
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(Profile::class);
-    }
-
-    public function scopePublished($query)
-    {
-        return $query->where('status', 'published')
-            ->whereNotNull('published_at')
-            ->where('published_at', '<=', now());
+        return $this->belongsTo(User::class);
     }
 }

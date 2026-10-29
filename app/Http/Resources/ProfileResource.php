@@ -22,10 +22,7 @@ class ProfileResource extends JsonResource
             'website' => $this->website,
             'timezone' => $this->timezone,
             'social_links' => $this->social_links,
-            'experiences' => ExperienceResource::collection($this->whenLoaded('experiences')),
-            'educations' => EducationResource::collection($this->whenLoaded('educations')),
-            'skills' => SkillResource::collection($this->whenLoaded('skills')),
-            'certifications' => CertificationResource::collection($this->whenLoaded('certifications')),
+
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

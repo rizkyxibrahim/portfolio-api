@@ -45,19 +45,9 @@ class Profile extends Model
         return $this->hasMany(Education::class)->orderBy('display_order', 'desc');
     }
 
-    public function skills(): HasMany
-    {
-        return $this->hasMany(Skill::class)->orderBy('display_order', 'asc');
-    }
-
     public function certifications(): HasMany
     {
         return $this->hasMany(Certification::class)->orderBy('display_order', 'asc');
-    }
-
-    public function projects(): HasMany
-    {
-        return $this->hasMany(Project::class)->orderBy('display_order', 'desc');
     }
 
     public function posts(): HasMany

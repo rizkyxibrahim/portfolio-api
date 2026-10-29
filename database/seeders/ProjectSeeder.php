@@ -4,9 +4,9 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\User;
-use App\Models\PortfolioProject;
+use App\Models\Project;
 
-class PortfolioProjectSeeder extends Seeder
+class ProjectSeeder extends Seeder
 {
     public function run(): void
     {
@@ -26,7 +26,7 @@ class PortfolioProjectSeeder extends Seeder
                 'start_date'  => '2026-01-01',
                 'end_date'    => null,
                 'is_featured' => true,
-                // 'is_published' => true,  <-- HAPUS BARIS INI
+                // 'is_published' => true,  // REMOVE THIS LINE
             ],
             [
                 'title'       => 'Xibra Web',
@@ -37,7 +37,7 @@ class PortfolioProjectSeeder extends Seeder
                 'start_date'  => '2026-02-01',
                 'end_date'    => null,
                 'is_featured' => true,
-                // 'is_published' => true,  <-- HAPUS BARIS INI
+                // 'is_published' => true,  // REMOVE THIS LINE
             ],
             [
                 'title'       => 'Xibra Bot',
@@ -53,7 +53,7 @@ class PortfolioProjectSeeder extends Seeder
         ];
 
         foreach ($projects as $project) {
-            PortfolioProject::create(array_merge($project, [
+            Project::create(array_merge($project, [
                 'user_id' => $user->id,
             ]));
         }

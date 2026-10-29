@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Skill extends Model
@@ -11,21 +11,19 @@ class Skill extends Model
     use HasFactory;
 
     protected $fillable = [
-        'profile_id',
+        'user_id',
         'name',
         'category',
         'level',
-        'is_featured',
-        'display_order',
+        'years_of_experience',
     ];
 
     protected $casts = [
-        'level' => 'integer',
-        'is_featured' => 'boolean',
+        'years_of_experience' => 'integer',
     ];
 
-    public function profile(): BelongsTo
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(Profile::class);
+        return $this->belongsTo(User::class);
     }
 }
