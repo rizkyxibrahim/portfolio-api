@@ -9,7 +9,7 @@
   "variable": [
     {
       "key": "base_url",
-      "value": "http://localhost:8000",
+      "value": "http://localhost:8000/api/v1",
       "type": "string"
     },
     {
@@ -18,16 +18,6 @@
       "type": "string"
     }
   ],
-  "auth": {
-    "type": "bearer",
-    "bearer": [
-      {
-        "key": "token",
-        "value": "{{access_token}}",
-        "type": "string"
-      }
-    ]
-  },
   "item": [
     {
       "name": "Authentication",
@@ -46,19 +36,24 @@
                 "value": "application/json"
               }
             ],
-            "url": {
-              "raw": "{{base_url}}/api/v1/auth/register",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "auth", "register"]
-            },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"Test User\",\n  \"username\": \"testuser\",\n  \"email\": \"test@example.com\",\n  \"phone\": \"+6281234567890\",\n  \"password\": \"password123\",\n  \"password_confirmation\": \"password123\"\n}",
+              "raw": "{\n  \"name\": \"Muhammad Rizky Ibrahim\",\n  \"username\": \"rizkyxibrahim\",\n  \"email\": \"rizkyxibrahim@gmail.com\",\n  \"phone\": \"085179706698\",\n  \"password\": \"***\",\n  \"password_confirmation\": \"P@ssw0rd\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
             }
           },
           "response": []
@@ -77,19 +72,24 @@
                 "value": "application/json"
               }
             ],
-            "url": {
-              "raw": "{{base_url}}/api/v1/auth/login",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "auth", "login"]
-            },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"identity\": \"testuser\",\n  \"password\": \"password123\"\n}",
+              "raw": "{\n  \"identity\": \"rizkyxibrahim\",\n  \"password\": \"***\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
             }
           },
           "event": [
@@ -124,19 +124,24 @@
                 "value": "application/json"
               }
             ],
-            "url": {
-              "raw": "{{base_url}}/api/v1/auth/login",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "auth", "login"]
-            },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"identity\": \"test@example.com\",\n  \"password\": \"password123\"\n}",
+              "raw": "{\n  \"identity\": \"rizkyxibrahim@gmail.com\",\n  \"password\": \"***\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
             }
           },
           "response": []
@@ -155,19 +160,24 @@
                 "value": "application/json"
               }
             ],
-            "url": {
-              "raw": "{{base_url}}/api/v1/auth/login",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "auth", "login"]
-            },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"identity\": \"+6281234567890\",\n  \"password\": \"password123\"\n}",
+              "raw": "{\n  \"identity\": \"085179706698\",\n  \"password\": \"***\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
             }
           },
           "response": []
@@ -183,9 +193,14 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/auth/me",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "auth", "me"]
+              "raw": "{{base_url}}/auth/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "me"
+              ]
             }
           },
           "response": []
@@ -204,19 +219,24 @@
                 "value": "application/json"
               }
             ],
-            "url": {
-              "raw": "{{base_url}}/api/v1/auth/forgot-password",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "auth", "forgot-password"]
-            },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"test@example.com\"\n}",
+              "raw": "{\n  \"email\": \"rizkyxibrahim@gmail.com\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/forgot-password",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "forgot-password"
+              ]
             }
           },
           "response": []
@@ -235,19 +255,24 @@
                 "value": "application/json"
               }
             ],
-            "url": {
-              "raw": "{{base_url}}/api/v1/auth/reset-password",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "auth", "reset-password"]
-            },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"test@example.com\",\n  \"token\": \"<reset_token_from_email>\",\n  \"password\": \"newpassword123\",\n  \"password_confirmation\": \"newpassword123\"\n}",
+              "raw": "{\n  \"email\": \"rizkyxibrahim@gmail.com\",\n  \"token\": \"<reset_token_from_email>\",\n  \"password\": \"***\",\n  \"password_confirmation\": \"newP@ssw0rd\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
                 }
               }
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/reset-password",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "reset-password"
+              ]
             }
           },
           "response": []
@@ -263,9 +288,14 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/auth/logout",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "auth", "logout"]
+              "raw": "{{base_url}}/auth/logout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "logout"
+              ]
             }
           },
           "response": []
@@ -285,11 +315,6 @@
                 "value": "application/json"
               }
             ],
-            "url": {
-              "raw": "{{base_url}}/api/v1/profile/photo",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "profile", "photo"]
-            },
             "body": {
               "mode": "formdata",
               "formdata": [
@@ -298,6 +323,16 @@
                   "type": "file",
                   "src": "/path/to/photo.jpg"
                 }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/profile/photo",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "profile",
+                "photo"
               ]
             }
           },
@@ -314,9 +349,14 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/profile/photo",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "profile", "photo"]
+              "raw": "{{base_url}}/profile/photo",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "profile",
+                "photo"
+              ]
             }
           },
           "response": []
@@ -337,9 +377,13 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/schedules",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "schedules"]
+              "raw": "{{base_url}}/schedules",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "schedules"
+              ]
             }
           },
           "response": []
@@ -358,11 +402,6 @@
                 "value": "application/json"
               }
             ],
-            "url": {
-              "raw": "{{base_url}}/api/v1/schedules",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "schedules"]
-            },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"title\": \"Weekly Team Meeting\",\n  \"description\": \"Weekly sync with the team\",\n  \"start_time\": \"2026-10-28T14:00:00\",\n  \"end_time\": \"2026-10-28T15:30:00\",\n  \"location\": \"Meeting Room A\",\n  \"is_all_day\": false,\n  \"recurring\": true,\n  \"recurring_pattern\": \"weekly\",\n  \"timezone\": \"Asia/Jakarta\",\n  \"is_overnight\": false\n}",
@@ -371,6 +410,15 @@
                   "language": "json"
                 }
               }
+            },
+            "url": {
+              "raw": "{{base_url}}/schedules",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "schedules"
+              ]
             }
           },
           "response": []
@@ -386,9 +434,14 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/schedules/1",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "schedules", "1"]
+              "raw": "{{base_url}}/schedules/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "schedules",
+                "1"
+              ]
             }
           },
           "response": []
@@ -407,11 +460,6 @@
                 "value": "application/json"
               }
             ],
-            "url": {
-              "raw": "{{base_url}}/api/v1/schedules/1",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "schedules", "1"]
-            },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"title\": \"Updated Meeting Title\",\n  \"description\": \"Updated description\",\n  \"start_time\": \"2026-10-28T14:00:00\",\n  \"end_time\": \"2026-10-28T16:00:00\",\n  \"recurring\": false\n}",
@@ -420,6 +468,16 @@
                   "language": "json"
                 }
               }
+            },
+            "url": {
+              "raw": "{{base_url}}/schedules/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "schedules",
+                "1"
+              ]
             }
           },
           "response": []
@@ -435,9 +493,14 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/schedules/1",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "schedules", "1"]
+              "raw": "{{base_url}}/schedules/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "schedules",
+                "1"
+              ]
             }
           },
           "response": []
@@ -458,9 +521,13 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/todos",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "todos"]
+              "raw": "{{base_url}}/todos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "todos"
+              ]
             }
           },
           "response": []
@@ -479,11 +546,6 @@
                 "value": "application/json"
               }
             ],
-            "url": {
-              "raw": "{{base_url}}/api/v1/todos",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "todos"]
-            },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"title\": \"Complete project proposal\",\n  \"description\": \"Finish the project proposal document\",\n  \"scheduled_start_at\": \"2026-10-28T09:00:00\",\n  \"scheduled_end_at\": \"2026-10-28T11:00:00\",\n  \"due_at\": \"2026-10-29T17:00:00\",\n  \"priority\": \"high\"\n}",
@@ -492,6 +554,15 @@
                   "language": "json"
                 }
               }
+            },
+            "url": {
+              "raw": "{{base_url}}/todos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "todos"
+              ]
             }
           },
           "response": []
@@ -510,11 +581,6 @@
                 "value": "application/json"
               }
             ],
-            "url": {
-              "raw": "{{base_url}}/api/v1/todos",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "todos"]
-            },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"title\": \"Simple task\"\n}",
@@ -523,6 +589,15 @@
                   "language": "json"
                 }
               }
+            },
+            "url": {
+              "raw": "{{base_url}}/todos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "todos"
+              ]
             }
           },
           "response": []
@@ -538,9 +613,14 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/todos/1",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "todos", "1"]
+              "raw": "{{base_url}}/todos/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "todos",
+                "1"
+              ]
             }
           },
           "response": []
@@ -559,11 +639,6 @@
                 "value": "application/json"
               }
             ],
-            "url": {
-              "raw": "{{base_url}}/api/v1/todos/1",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "todos", "1"]
-            },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"title\": \"Updated todo title\",\n  \"is_completed\": true,\n  \"priority\": \"medium\"\n}",
@@ -572,6 +647,16 @@
                   "language": "json"
                 }
               }
+            },
+            "url": {
+              "raw": "{{base_url}}/todos/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "todos",
+                "1"
+              ]
             }
           },
           "response": []
@@ -587,9 +672,14 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/todos/1",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "todos", "1"]
+              "raw": "{{base_url}}/todos/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "todos",
+                "1"
+              ]
             }
           },
           "response": []
@@ -610,9 +700,13 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/reminders",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "reminders"]
+              "raw": "{{base_url}}/reminders",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "reminders"
+              ]
             }
           },
           "response": []
@@ -631,11 +725,6 @@
                 "value": "application/json"
               }
             ],
-            "url": {
-              "raw": "{{base_url}}/api/v1/reminders",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "reminders"]
-            },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"title\": \"Daily Standup\",\n  \"description\": \"Team daily standup meeting\",\n  \"reminder_at\": \"2026-10-28T08:00:00\",\n  \"recurring\": true,\n  \"recurring_pattern\": \"daily\",\n  \"delivery_status\": \"pending\",\n  \"dedupe_key\": \"daily-standup-2026\"\n}",
@@ -644,6 +733,15 @@
                   "language": "json"
                 }
               }
+            },
+            "url": {
+              "raw": "{{base_url}}/reminders",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "reminders"
+              ]
             }
           },
           "response": []
@@ -659,9 +757,14 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/reminders/1",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "reminders", "1"]
+              "raw": "{{base_url}}/reminders/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "reminders",
+                "1"
+              ]
             }
           },
           "response": []
@@ -680,11 +783,6 @@
                 "value": "application/json"
               }
             ],
-            "url": {
-              "raw": "{{base_url}}/api/v1/reminders/1",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "reminders", "1"]
-            },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"title\": \"Updated Reminder\",\n  \"is_completed\": true\n}",
@@ -693,6 +791,16 @@
                   "language": "json"
                 }
               }
+            },
+            "url": {
+              "raw": "{{base_url}}/reminders/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "reminders",
+                "1"
+              ]
             }
           },
           "response": []
@@ -708,9 +816,14 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/reminders/1",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "reminders", "1"]
+              "raw": "{{base_url}}/reminders/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "reminders",
+                "1"
+              ]
             }
           },
           "response": []
@@ -731,9 +844,14 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/finance/transactions",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "finance", "transactions"]
+              "raw": "{{base_url}}/finance/transactions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "finance",
+                "transactions"
+              ]
             }
           },
           "response": []
@@ -749,9 +867,14 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/finance/transactions?type=income",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "finance", "transactions"],
+              "raw": "{{base_url}}/finance/transactions?type=income",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "finance",
+                "transactions"
+              ],
               "query": [
                 {
                   "key": "type",
@@ -776,11 +899,6 @@
                 "value": "application/json"
               }
             ],
-            "url": {
-              "raw": "{{base_url}}/api/v1/finance/transactions",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "finance", "transactions"]
-            },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"type\": \"expense\",\n  \"amount\": 75000,\n  \"category\": \"makanan\",\n  \"description\": \"Lunch with team\",\n  \"transaction_date\": \"2026-10-27\"\n}",
@@ -789,6 +907,16 @@
                   "language": "json"
                 }
               }
+            },
+            "url": {
+              "raw": "{{base_url}}/finance/transactions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "finance",
+                "transactions"
+              ]
             }
           },
           "response": []
@@ -807,11 +935,6 @@
                 "value": "application/json"
               }
             ],
-            "url": {
-              "raw": "{{base_url}}/api/v1/finance/transactions",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "finance", "transactions"]
-            },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"type\": \"in\",\n  \"amount\": 5000000,\n  \"category\": \"gaji\",\n  \"description\": \"Monthly salary\",\n  \"transaction_date\": \"2026-10-01\"\n}",
@@ -820,6 +943,16 @@
                   "language": "json"
                 }
               }
+            },
+            "url": {
+              "raw": "{{base_url}}/finance/transactions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "finance",
+                "transactions"
+              ]
             }
           },
           "response": []
@@ -838,11 +971,6 @@
                 "value": "application/json"
               }
             ],
-            "url": {
-              "raw": "{{base_url}}/api/v1/finance/transactions",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "finance", "transactions"]
-            },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"type\": \"out\",\n  \"amount\": 150000,\n  \"category\": \"transport\",\n  \"description\": \"Fuel\",\n  \"transaction_date\": \"2026-10-15\"\n}",
@@ -851,6 +979,16 @@
                   "language": "json"
                 }
               }
+            },
+            "url": {
+              "raw": "{{base_url}}/finance/transactions",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "finance",
+                "transactions"
+              ]
             }
           },
           "response": []
@@ -866,9 +1004,15 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/finance/transactions/1",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "finance", "transactions", "1"]
+              "raw": "{{base_url}}/finance/transactions/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "finance",
+                "transactions",
+                "1"
+              ]
             }
           },
           "response": []
@@ -887,11 +1031,6 @@
                 "value": "application/json"
               }
             ],
-            "url": {
-              "raw": "{{base_url}}/api/v1/finance/transactions/1",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "finance", "transactions", "1"]
-            },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"type\": \"income\",\n  \"amount\": 1000000,\n  \"category\": \"bonus\",\n  \"description\": \"Performance bonus\"\n}",
@@ -900,6 +1039,17 @@
                   "language": "json"
                 }
               }
+            },
+            "url": {
+              "raw": "{{base_url}}/finance/transactions/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "finance",
+                "transactions",
+                "1"
+              ]
             }
           },
           "response": []
@@ -915,9 +1065,15 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/finance/transactions/1",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "finance", "transactions", "1"]
+              "raw": "{{base_url}}/finance/transactions/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "finance",
+                "transactions",
+                "1"
+              ]
             }
           },
           "response": []
@@ -938,9 +1094,14 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/portfolio/skills",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "portfolio", "skills"]
+              "raw": "{{base_url}}/portfolio/skills",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "portfolio",
+                "skills"
+              ]
             }
           },
           "response": []
@@ -959,11 +1120,6 @@
                 "value": "application/json"
               }
             ],
-            "url": {
-              "raw": "{{base_url}}/api/v1/portfolio/skills",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "portfolio", "skills"]
-            },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"PHP\",\n  \"category\": \"programming\",\n  \"level\": \"advanced\",\n  \"years_of_experience\": 5\n}",
@@ -972,6 +1128,16 @@
                   "language": "json"
                 }
               }
+            },
+            "url": {
+              "raw": "{{base_url}}/portfolio/skills",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "portfolio",
+                "skills"
+              ]
             }
           },
           "response": []
@@ -987,9 +1153,15 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/portfolio/skills/1",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "portfolio", "skills", "1"]
+              "raw": "{{base_url}}/portfolio/skills/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "portfolio",
+                "skills",
+                "1"
+              ]
             }
           },
           "response": []
@@ -1008,11 +1180,6 @@
                 "value": "application/json"
               }
             ],
-            "url": {
-              "raw": "{{base_url}}/api/v1/portfolio/skills/1",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "portfolio", "skills", "1"]
-            },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"PHP\",\n  \"category\": \"programming\",\n  \"level\": \"expert\",\n  \"years_of_experience\": 7\n}",
@@ -1021,6 +1188,17 @@
                   "language": "json"
                 }
               }
+            },
+            "url": {
+              "raw": "{{base_url}}/portfolio/skills/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "portfolio",
+                "skills",
+                "1"
+              ]
             }
           },
           "response": []
@@ -1036,9 +1214,15 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/portfolio/skills/1",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "portfolio", "skills", "1"]
+              "raw": "{{base_url}}/portfolio/skills/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "portfolio",
+                "skills",
+                "1"
+              ]
             }
           },
           "response": []
@@ -1059,9 +1243,14 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/portfolio/projects",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "portfolio", "projects"]
+              "raw": "{{base_url}}/portfolio/projects",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "portfolio",
+                "projects"
+              ]
             }
           },
           "response": []
@@ -1080,11 +1269,6 @@
                 "value": "application/json"
               }
             ],
-            "url": {
-              "raw": "{{base_url}}/api/v1/portfolio/projects",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "portfolio", "projects"]
-            },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"title\": \"Xibra API\",\n  \"description\": \"Central REST API for Xibra Platform\",\n  \"image_url\": \"https://example.com/xibra-api.png\",\n  \"github_url\": \"https://github.com/rizkyxibrahim/xibra-api\",\n  \"live_url\": \"https://api.xibra.com\",\n  \"start_date\": \"2026-01-01\",\n  \"end_date\": \"2026-12-31\",\n  \"is_featured\": true\n}",
@@ -1093,6 +1277,16 @@
                   "language": "json"
                 }
               }
+            },
+            "url": {
+              "raw": "{{base_url}}/portfolio/projects",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "portfolio",
+                "projects"
+              ]
             }
           },
           "response": []
@@ -1108,9 +1302,15 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/portfolio/projects/1",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "portfolio", "projects", "1"]
+              "raw": "{{base_url}}/portfolio/projects/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "portfolio",
+                "projects",
+                "1"
+              ]
             }
           },
           "response": []
@@ -1129,11 +1329,6 @@
                 "value": "application/json"
               }
             ],
-            "url": {
-              "raw": "{{base_url}}/api/v1/portfolio/projects/1",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "portfolio", "projects", "1"]
-            },
             "body": {
               "mode": "raw",
               "raw": "{\n  \"title\": \"Xibra API v2\",\n  \"description\": \"Updated description\",\n  \"is_featured\": false\n}",
@@ -1142,6 +1337,17 @@
                   "language": "json"
                 }
               }
+            },
+            "url": {
+              "raw": "{{base_url}}/portfolio/projects/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "portfolio",
+                "projects",
+                "1"
+              ]
             }
           },
           "response": []
@@ -1157,9 +1363,15 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/portfolio/projects/1",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "portfolio", "projects", "1"]
+              "raw": "{{base_url}}/portfolio/projects/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "portfolio",
+                "projects",
+                "1"
+              ]
             }
           },
           "response": []
@@ -1180,9 +1392,14 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/public/profile",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "public", "profile"]
+              "raw": "{{base_url}}/public/profile",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "public",
+                "profile"
+              ]
             }
           },
           "response": []
@@ -1198,9 +1415,14 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/public/skills",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "public", "skills"]
+              "raw": "{{base_url}}/public/skills",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "public",
+                "skills"
+              ]
             }
           },
           "response": []
@@ -1216,9 +1438,14 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/public/projects",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "public", "projects"]
+              "raw": "{{base_url}}/public/projects",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "public",
+                "projects"
+              ]
             }
           },
           "response": []
@@ -1234,9 +1461,14 @@
               }
             ],
             "url": {
-              "raw": "{{base_url}}/api/v1/public/contact",
-              "host": ["{{base_url}}"],
-              "path": ["api", "v1", "public", "contact"]
+              "raw": "{{base_url}}/public/contact",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "public",
+                "contact"
+              ]
             }
           },
           "response": []

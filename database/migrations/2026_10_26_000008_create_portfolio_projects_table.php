@@ -19,10 +19,12 @@ return new class extends Migration
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->boolean('is_featured')->default(false);
+            $table->boolean('is_published')->default(false)->after('is_featured');
             $table->timestamps();
 
             $table->index('user_id');
             $table->index('is_featured');
+            $table->index('is_published');
         });
     }
 

@@ -27,6 +27,19 @@ class PortfolioSkillController extends Controller
         );
     }
 
+    public function publicIndex()
+    {
+        $skills = PortfolioSkill::orderBy('category', 'asc')
+            ->orderBy('name', 'asc')
+            ->get();
+
+        return ApiResponse::success(
+            data: PortfolioSkillResource::collection($skills),
+            message: 'Public skills retrieved.',
+            code: 'PUBLIC_SKILLS_RETRIEVED',
+        );
+    }
+
     public function store(StorePortfolioSkillRequest $request)
     {
         $user = $request->user();

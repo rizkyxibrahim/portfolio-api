@@ -32,6 +32,19 @@ class PortfolioProjectController extends Controller
         );
     }
 
+    public function publicIndex()
+    {
+        $projects = PortfolioProject::where('is_featured', true)
+            ->orderByDesc('created_at')
+            ->get();
+
+        return ApiResponse::success(
+            data: PortfolioProjectResource::collection($projects),
+            message: 'Public projects retrieved.',
+            code: 'PUBLIC_PROJECTS_RETRIEVED',
+        );
+    }
+
     public function store(StorePortfolioProjectRequest $request)
     {
         $user = $request->user();

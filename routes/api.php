@@ -5,12 +5,12 @@ use App\Http\Controllers\Api\V1\Auth\AuthController;
 use App\Http\Controllers\Api\V1\Auth\ForgotPasswordController;
 use App\Http\Controllers\Api\V1\Auth\ResetPasswordController;
 use App\Http\Controllers\Api\V1\ScheduleController;
-use App\Http\Requests\Api\V1\LoginRequest;
 use App\Http\Controllers\Api\V1\TodoController;
 use App\Http\Controllers\Api\V1\ReminderController;
 use App\Http\Controllers\Api\V1\FinanceTransactionController;
 use App\Http\Controllers\Api\V1\PortfolioSkillController;
 use App\Http\Controllers\Api\V1\PortfolioProjectController;
+use App\Http\Controllers\Api\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,8 +28,8 @@ use App\Http\Controllers\Api\V1\PortfolioProjectController;
 Route::prefix('v1/auth')->name('api.v1.auth.')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->name('login');
     Route::post('/register', [AuthController::class, 'register'])->name('register');
-    Route::post('/forgot-password', [\App\Http\Controllers\Api\V1\Auth\ForgotPasswordController::class, 'sendResetLink'])->name('forgot-password');
-    Route::post('/reset-password', [\App\Http\Controllers\Api\V1\Auth\ResetPasswordController::class, 'reset'])->name('reset-password');
+    Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLink'])->name('forgot-password');
+    Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name('reset-password');
     Route::post('/logout', [AuthController::class, 'logout'])
         ->middleware('auth:sanctum')
         ->name('logout');
@@ -39,9 +39,10 @@ Route::prefix('v1/auth')->name('api.v1.auth.')->group(function () {
 });
 
 // Password reset route for email notification (used by Laravel's ResetPassword notification)
-// Must be named exactly 'password.reset' for the notification to work
 Route::get('/v1/auth/reset-password/{token}', function ($token, \Illuminate\Http\Request $request) {
-    return redirect()->away(config('app.frontend_url', 'http://localhost:3000') . "/reset-password?token={$token}&email=" . $request->query('email'));
+    return redirect()->away(
+        config('app.frontend_url', 'http://localhost:3000') . "/reset-password?token={$token}&email=" . $request->query('email')
+    );
 })->name('password.reset');
 
 // ============================================================================
@@ -90,6 +91,10 @@ Route::middleware('auth:sanctum')->prefix('v1')->name('api.v1.')->group(function
     Route::get('/portfolio/projects/{project}', [PortfolioProjectController::class, 'show'])->name('portfolio.projects.show');
     Route::put('/portfolio/projects/{project}', [PortfolioProjectController::class, 'update'])->name('portfolio.projects.update');
     Route::delete('/portfolio/projects/{project}', [PortfolioProjectController::class, 'destroy'])->name('portfolio.projects.destroy');
+
+    // Profile
+    Route::get('/profile/me', [ProfileController::class, 'show'])->name('profile.me');
+    Route::put('/profile/me', [ProfileController::class, 'update'])->name('profile.update');
 });
 
 // ============================================================================
@@ -100,42 +105,22 @@ Route::middleware('auth:sanctum')->prefix('v1')->name('api.v1.')->group(function
     Route::delete('/profile/photo', [AuthController::class, 'deleteProfilePhoto'])->name('profile.photo.delete');
 });
 
+
 // ============================================================================
 // Public Portfolio (Read-only — no login required)
 // ============================================================================
 Route::prefix('v1/public')->name('api.v1.public.')->group(function () {
-    Route::get('/profile', function () {
-        return \App\Support\ApiResponse::success(
-            data: [
-                'name' => 'Rizky Xibra Ibrahim',
-                'title' => 'Personal Productivity & AI Integration Platform',
-                'bio' => 'Building Xibra Platform — personal productivity, scheduling, finance, and AI integrations.',
-            ],
-            message: 'Public profile retrieved.',
-            code: 'PUBLIC_PROFILE_RETRIEVED',
-        );
-    })->name('profile');
+    Route::get('/profile', [ProfileController::class, 'showPublic'])->name('profile');
+    Route::get('/contact', [ProfileController::class, 'publicContact'])->name('contact');
+});
 
-    Route::get('/skills', function () {
-        return \App\Support\ApiResponse::success(
-            data: [],
-            message: 'Public skills retrieved.',
-            code: 'PUBLIC_SKILLS_RETRIEVED',
-        );
-    })->name('skills');
 
-    Route::get('/projects', function () {
-        return \App\Support\ApiResponse::success(
-            data: [],
-            message: 'Public projects retrieved.',
-            code: 'PUBLIC_PROJECTS_RETRIEVED',
-        );
-    })->name('projects');
-
-    Route::get('/contact', function () {
-        return \App\Support\ApiResponse::success(
-            message: 'Public contact endpoint.',
-            code: 'PUBLIC_CONTACT_READY',
-        );
-    })->name('contact');
+// ============================================================================
+// Public Portfolio (Read-only — no login required)
+// ============================================================================
+Route::prefix('v1/public')->name('api.v1.public.')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'showPublic'])->name('profile');
+    Route::get('/skills', [PortfolioSkillController::class, 'publicIndex'])->name('skills');
+    Route::get('/projects', [PortfolioProjectController::class, 'publicIndex'])->name('projects');
+    Route::get('/contact', [ProfileController::class, 'publicContact'])->name('contact');
 });
