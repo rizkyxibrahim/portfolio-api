@@ -382,10 +382,223 @@ class DomainApiTest extends TestCase
     }
 
     public function test_public_projects(): void
-    {
-        $response = $this->getJson('/api/v1/public/projects');
+        {
+            $response = $this->getJson('/api/v1/public/projects');
 
-        $response->assertStatus(200)
-            ->assertJson(['code' => 'PUBLIC_PROJECTS_RETRIEVED']);
+            $response->assertStatus(200)
+                ->assertJson(['code' => 'PUBLIC_PROJECTS_RETRIEVED']);
+        }
+
+        public function test_public_skills(): void
+        {
+            $response = $this->getJson('/api/v1/public/skills');
+
+            $response->assertStatus(200)
+                ->assertJson(['code' => 'PUBLIC_SKILLS_RETRIEVED']);
+        }
+
+        public function test_public_contact(): void
+        {
+            $response = $this->getJson('/api/v1/public/contact');
+
+            $response->assertStatus(200)
+                ->assertJson(['code' => 'PUBLIC_CONTACT_READY']);
+        }
+
+        // ============ Authentication Extended ============
+
+        public function test_register(): void
+        {
+            $response = $this->postJson('/api/v1/auth/register', [
+                'name' => 'New User',
+                'username' => 'newuser',
+                'email' => 'newuser@example.com',
+                'phone' => '+6281234567890',
+                'password' => 'password123',
+                'password_confirmation' => 'password123',
+            ]);
+
+            $response->assertStatus(201)
+                ->assertJson(['code' => 'REGISTER_SUCCESS'])
+                ->assertJsonStructure([
+                    'status', 'code', 'message', 'data', 'meta'
+                ]);
+
+            $this->assertDatabaseHas('users', [
+                'username' => 'newuser',
+                'email' => 'newuser@example.com',
+            ]);
+        }
+
+        public function test_register_requires_unique_username(): void
+        {
+            $response = $this->postJson('/api/v1/auth/register', [
+                'name' => 'Another User',
+                'username' => 'testuser', // already exists from setUp
+                'email' => 'another@example.com',
+                'phone' => '+6281234567891',
+                'password' => 'password123',
+                'password_confirmation' => 'password123',
+            ]);
+
+            $response->assertStatus(422)
+                ->assertJson(['code' => 'VALIDATION_ERROR']);
+        }
+
+        public function test_forgot_password(): void
+        {
+            $response = $this->postJson('/api/v1/auth/forgot-password', [
+                'email' => 'test@example.com',
+            ]);
+
+            $response->assertStatus(200)
+                ->assertJson(['code' => 'PASSWORD_RESET_LINK_SENT']);
+        }
+
+        public function test_forgot_password_with_nonexistent_email(): void
+        {
+            $response = $this->postJson('/api/v1/auth/forgot-password', [
+                'email' => 'nonexistent@example.com',
+            ]);
+
+            // Should still return success for security (don't reveal if email exists)
+            $response->assertStatus(200)
+                ->assertJson(['code' => 'PASSWORD_RESET_LINK_SENT']);
+        }
+
+        public function test_reset_password(): void
+            {
+                // Create a password reset token directly using the Password broker
+                $token = \Illuminate\Support\Facades\Password::broker()->createToken($this->user);
+
+                $response = $this->postJson('/api/v1/auth/reset-password', [
+                    'email' => 'test@example.com',
+                    'token' => $token,
+                    'password' => 'newpassword123',
+                    'password_confirmation' => 'newpassword123',
+                ]);
+
+                $response->assertStatus(200)
+                    ->assertJson(['code' => 'PASSWORD_RESET_SUCCESS']);
+
+                // Verify login works with new password
+                $loginResponse = $this->postJson('/api/v1/auth/login', [
+                    'identity' => 'test@example.com',
+                    'password' => 'newpassword123',
+                ]);
+
+                $loginResponse->assertStatus(200)
+                    ->assertJson(['code' => 'LOGIN_SUCCESS']);
+            }
+
+        // ============ Profile Photo ============
+
+        public function test_upload_profile_photo(): void
+        {
+            $file = \Illuminate\Http\UploadedFile::fake()->image('avatar.jpg');
+
+            $response = $this->withHeaders($this->getAuthHeaders())
+                ->postJson('/api/v1/profile/photo', [
+                    'photo' => $file,
+                ]);
+
+            $response->assertStatus(201)
+                ->assertJson(['code' => 'PROFILE_PHOTO_UPLOADED'])
+                ->assertJsonStructure([
+                    'status', 'code', 'message', 'data', 'meta'
+                ]);
+
+            $this->assertDatabaseHas('users', [
+                'id' => $this->user->id,
+            ]);
+
+            $this->user->refresh();
+            $this->assertNotNull($this->user->profile_photo_path);
+        }
+
+        public function test_delete_profile_photo(): void
+        {
+            // First upload a photo
+            $file = \Illuminate\Http\UploadedFile::fake()->image('avatar.jpg');
+            $this->withHeaders($this->getAuthHeaders())
+                ->postJson('/api/v1/profile/photo', ['photo' => $file]);
+
+            $this->user->refresh();
+            $this->assertNotNull($this->user->profile_photo_path);
+
+            // Now delete it
+            $response = $this->withHeaders($this->getAuthHeaders())
+                ->deleteJson('/api/v1/profile/photo');
+
+            $response->assertStatus(200)
+                ->assertJson(['code' => 'PROFILE_PHOTO_DELETED']);
+
+            $this->user->refresh();
+            $this->assertNull($this->user->profile_photo_path);
+        }
+
+        // ============ Finance Transaction Type Normalization ============
+
+        public function test_finance_transaction_type_normalization_in_to_income(): void
+        {
+            $response = $this->withHeaders($this->getAuthHeaders())
+                ->postJson('/api/v1/finance/transactions', [
+                    'type' => 'in',
+                    'amount' => 100000,
+                    'category' => 'gaji',
+                    'transaction_date' => '2026-10-01',
+                ]);
+
+            $response->assertStatus(201)
+                ->assertJson(['code' => 'TRANSACTION_CREATED']);
+
+            $this->assertDatabaseHas('finance_transactions', [
+                'type' => 'income',
+                'amount' => 100000,
+            ]);
+        }
+
+        public function test_finance_transaction_type_normalization_out_to_expense(): void
+        {
+            $response = $this->withHeaders($this->getAuthHeaders())
+                ->postJson('/api/v1/finance/transactions', [
+                    'type' => 'out',
+                    'amount' => 50000,
+                    'category' => 'transport',
+                    'transaction_date' => '2026-10-01',
+                ]);
+
+            $response->assertStatus(201)
+                ->assertJson(['code' => 'TRANSACTION_CREATED']);
+
+            $this->assertDatabaseHas('finance_transactions', [
+                'type' => 'expense',
+                'amount' => 50000,
+            ]);
+        }
+
+        public function test_finance_transaction_filter_by_type(): void
+        {
+            \App\Models\FinanceTransaction::factory()->create([
+                'user_id' => $this->user->id,
+                'type' => 'income',
+                'amount' => 100000,
+            ]);
+            \App\Models\FinanceTransaction::factory()->create([
+                'user_id' => $this->user->id,
+                'type' => 'expense',
+                'amount' => 50000,
+            ]);
+
+            $response = $this->withHeaders($this->getAuthHeaders())
+                ->getJson('/api/v1/finance/transactions?type=income');
+
+            $response->assertStatus(200)
+                ->assertJson(['code' => 'TRANSACTIONS_RETRIEVED']);
+
+            $data = $response->json('data');
+            foreach ($data as $transaction) {
+                $this->assertEquals('income', $transaction['type']);
+            }
+        }
     }
-}

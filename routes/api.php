@@ -38,6 +38,12 @@ Route::prefix('v1/auth')->name('api.v1.auth.')->group(function () {
         ->name('me');
 });
 
+// Password reset route for email notification (used by Laravel's ResetPassword notification)
+// Must be named exactly 'password.reset' for the notification to work
+Route::get('/v1/auth/reset-password/{token}', function ($token, \Illuminate\Http\Request $request) {
+    return redirect()->away(config('app.frontend_url', 'http://localhost:3000') . "/reset-password?token={$token}&email=" . $request->query('email'));
+})->name('password.reset');
+
 // ============================================================================
 // Personal Dashboard (Protected — Sanctum auth required)
 // ============================================================================

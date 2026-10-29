@@ -13,23 +13,14 @@ class ForgotPasswordController extends Controller
     {
         $email = $request->validated('email');
 
-        $status = Password::broker()->sendResetLink(
-            ['email' => $email]
-        );
+        // Always return success for security (don't reveal if email exists)
+        // The Password broker will only send email if user exists
+        Password::broker()->sendResetLink(['email' => $email]);
 
-        if ($status === Password::RESET_LINK_SENT) {
-            return ApiResponse::success(
-                data: null,
-                message: 'Password reset link has been sent to your email.',
-                code: 'PASSWORD_RESET_LINK_SENT',
-            );
-        }
-
-        return ApiResponse::error(
-            title: 'Failed to send reset link.',
-            detail: 'Unable to send password reset link at this time.',
-            code: 'PASSWORD_RESET_FAILED',
-            status: 500,
+        return ApiResponse::success(
+            data: null,
+            message: 'If the email exists, a password reset link has been sent.',
+            code: 'PASSWORD_RESET_LINK_SENT',
         );
     }
 }

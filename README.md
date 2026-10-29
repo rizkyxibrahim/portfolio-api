@@ -19,9 +19,9 @@ This repository is part of the **Xibra Platform** ecosystem. Every application (
 
 ## Tech Stack
 
-- PHP 8.5+
+- PHP 8.4+
 - Laravel 13
-- PostgreSQL 18
+- PostgreSQL 17
 - Laravel Sanctum for API authentication
 - REST API with versioned endpoints (`/api/v1/`)
 - API Resources for consistent JSON representation
@@ -214,9 +214,9 @@ All personal tables have `user_id` as foreign key to `users` table with `onDelet
 
 ## Requirements
 
-- PHP version compatible with the selected Laravel release (tested with PHP 8.5.11)
+- PHP version compatible with the selected Laravel release (tested with PHP 8.4+)
 - Composer
-- PostgreSQL (tested with PostgreSQL 18 via Laragon)
+- PostgreSQL (tested with PostgreSQL 17 via Laragon)
 - Git
 - Node.js & npm (for frontend assets, if applicable)
 
@@ -387,7 +387,7 @@ Response:
 
 ### Access Protected Endpoints
 
-Include `Authorization: Bearer <token>` header on every request.
+Include `Authorization: Bearer ***` header on every request.
 
 ```http
 GET /api/v1/auth/me
@@ -548,16 +548,6 @@ git add .
 git commit -m "[Feature] Add forgot/reset password functionality"
 git push origin main
 ```
-
-## Deployment & Recovery
-
-Not yet implemented. Will be added when ready to deploy to server (`xibra-infra`).
-
-Guide will include:
-- Deploy to 24/7 server (VPS)
-- Reverse proxy configuration (Nginx)
-- PostgreSQL database backup
-- Recovery from backup
 
 ## Project Status & Next Steps
 
